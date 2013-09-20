@@ -1,4 +1,4 @@
-drdelambre
+drdelambre namespace
 ==========
 
-a repo for testing node modules
+This is a collection of modules that i've crafted over the years for making large frontend engineering projects a lot easier.
