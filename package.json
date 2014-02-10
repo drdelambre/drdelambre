@@ -1,8 +1,0 @@
-{
-	"name": "drdelambre",
-	"author":"Alex <drdelambre@gmail.com>",
-	"description":"a namespace for my cool stuff",
-	"version":"0.1.0",
-	"private":true,
-	"dependencies": {}
-}
