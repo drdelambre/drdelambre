@@ -14,7 +14,7 @@
 //			passes an id to the open function. beans and cool are static
 //			strings in the hash
 // requires: $dd
-define('modules/route',['dd'],function($dd){
+;(function(){
 	var paths = {},
 		current = null;
 
@@ -86,6 +86,4 @@ define('modules/route',['dd'],function($dd){
 				paths[path].after.push(close);
 		}
 	});
-
-	return $dd.route;
-});
+})();

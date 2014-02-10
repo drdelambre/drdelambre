@@ -1,5 +1,5 @@
 // bind polyfill for setting function scope
-define('polyfill/bind',function(){
+;(function(){
 	if(Function.prototype.bind)
 		return;
 	Function.prototype.bind = function(oThis){
@@ -21,4 +21,4 @@ define('polyfill/bind',function(){
 	
 		return fBound;
 	};
-});
+})();

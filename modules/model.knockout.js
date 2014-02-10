@@ -2,7 +2,7 @@
 //		Allows you to use observables to create a reactive web application
 //		using the $dd.model paradigm for your data structure
 // requires: $dd.model
-define('modules/model.knockout',['dd','modules/model'],function($dd){
+;(function(){
 	$dd.model.watchInterface({
 		observe: function(val){
 			if($dd.type(val,'array'))
@@ -19,6 +19,4 @@ define('modules/model.knockout',['dd','modules/model'],function($dd){
 			vari(val);
 		}
 	});
-
-	return null;
-});
+})();

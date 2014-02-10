@@ -3,7 +3,7 @@
 //		why should you suffer?
 //		LETS MAKE IT BETTER
 // requires: $dd, $dd.polyfill.keys, $dd.dom
-define('modules/touch',['dd','modules/dom','polyfill/keys'],function($dd){
+;(function(){
 	$dd.mixin({
 		istouch: !!('ontouchend' in document),
 		touch : function(options){
@@ -161,6 +161,4 @@ define('modules/touch',['dd','modules/dom','polyfill/keys'],function($dd){
 			return self;
 		}
 	});
-
-	return $dd.touch;
-});
+})();

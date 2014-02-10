@@ -3,7 +3,7 @@
 //		make sure to document your messages, as they're
 //		easy to bury in the code
 // requires: $dd
-define('modules/pubsub',['dd'],function($dd){
+;(function(){
 	var cache = {};
 	$dd.mixin({
 		pub : function(){
@@ -34,4 +34,4 @@ define('modules/pubsub',['dd'],function($dd){
 			}
 		}
 	});
-});
+})();

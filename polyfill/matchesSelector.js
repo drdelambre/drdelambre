@@ -1,5 +1,5 @@
 // polyfill for using matchesSelector in old doms
-define('polyfill/matchesSelector',function(){
+;(function(){
 	Element.prototype.matchesSelector = Element.prototype.webkitMatchesSelector ||
 		Element.prototype.mozMatchesSelector ||
 		function(selector){
@@ -11,4 +11,4 @@ define('polyfill/matchesSelector',function(){
 			}
 			return false;
 		};
-});
+})();

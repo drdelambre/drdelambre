@@ -1,5 +1,5 @@
 // Object.keys polyfill
-define('polyfill/keys',function(){
+;(function(){
 	Object.keys = Object.keys||(function(){
 		'use strict';
 		var hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -35,4 +35,4 @@ define('polyfill/keys',function(){
 			return result;
 		};
 	}());
-});
+})();

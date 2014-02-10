@@ -1,5 +1,5 @@
 // polyfill for using querySelectorAll in old doms
-define('polyfill/querySelector',function(){
+;(function(){
 	document.querySelectorAll = document.querySelectorAll||function(selector){
 		var doc = document,
 			head = doc.documentElement.firstChild,
@@ -12,4 +12,4 @@ define('polyfill/querySelector',function(){
 
 		return doc._qsa;
 	};
-});
+})();

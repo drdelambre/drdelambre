@@ -8,7 +8,7 @@
 //		caps lock konami code:
 //			[shift][up + up + down + down + left + right + left + right + b + a + enter]
 // requires: $dd
-define('modules/keys',['dd'],function($dd){
+;(function(){
 	var keyStatus = {},
 		keyMap = {},
 		add = function(evt){
@@ -143,4 +143,4 @@ define('modules/keys',['dd'],function($dd){
 	});
 
 	return $dd.keys;
-});
+})();

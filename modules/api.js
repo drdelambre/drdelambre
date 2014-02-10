@@ -8,7 +8,7 @@
 //		return true, the callback isn't called.
 //		This is more of a heap of code to stick into your own api interface.
 // requires: $dd
-define('modules/api',['dd'],function($dd){
+;(function(){
 	function postString(obj, prefix){
 		var str = [], p, k, v;
 		if($dd.type(obj,'array')){
@@ -234,5 +234,5 @@ define('modules/api',['dd'],function($dd){
 		api : self
 	});
 
-	return self;
-});
+	return $dd.api;
+})();

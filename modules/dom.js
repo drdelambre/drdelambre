@@ -2,7 +2,7 @@
 //		A dom navigator. Experimental. But jquery can crash your phone
 //		and is getting fatter all the time. So make it better.
 // requires: $dd, $dd.polyfills.querySelector, $dd.polyfills.matchesSelector
-define('modules/dom',['dd','polyfill/querySelector','polyfill/matchesSelector'],function($dd){
+;(function(){
 	var cleanSelector = function(selector,_context){
 		if(!selector.length)
 			return [];
@@ -436,5 +436,5 @@ define('modules/dom',['dd','polyfill/querySelector','polyfill/matchesSelector'],
 		dom : ret_func
 	});
 
-	return ret_func;
-});
+	return $dd.dom;
+})();

@@ -14,7 +14,7 @@
 
 	Checkout the modules folder for the fun stuff!
 \**------------------------------------------------------------------------**/
-define('dd',function(){
+;(function(global){
 	var self = {};
 
 	// $dd.type:
@@ -132,12 +132,12 @@ define('dd',function(){
 	// $dd.expose:
 	//		poluting global has some uses
 	self.expose = function(obj,as){
-		if(window.hasOwnProperty(as))
+		if(global.hasOwnProperty(as))
 			console.log('$dd.expose: Overwritting global variable [' + as + ']');
-		window[as] = obj;
+		global[as] = obj;
 
 		return self;
 	};
 
-	return self;
-});
+	self.expose(self,'$dd');
+})(typeof window !== "undefined" ? window : this);

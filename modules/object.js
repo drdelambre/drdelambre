@@ -4,7 +4,7 @@
 //		have been problematic for junior developers, so it has fallen
 //		out of fasion.
 // requires: $dd
-define('modules/object',['dd','polyfill/bind'],function($dd){
+;(function(){
 	$dd.mixin({
 		object: function(proto){
 			var fun = function(){
@@ -35,6 +35,4 @@ define('modules/object',['dd','polyfill/bind'],function($dd){
 			return fun;
 		}
 	});
-
-	return $dd.object;
-});
+})();
