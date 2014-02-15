@@ -98,7 +98,7 @@
 			ni,no;
 
 		for(ni = 0; ni < arguments.length; ni++){
-			if(!$self.type(arguments[ni],'object'))
+			if(!self.type(arguments[ni],'object'))
 				continue;
 			for(no in arguments[ni])
 				out[no] = arguments[ni][no];

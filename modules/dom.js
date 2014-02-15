@@ -324,7 +324,10 @@
 					})();
 
 					if(window.addEvent){
-						window.addEvent('on'+evt, events[evt].fun);
+						if(evt == 'scroll')
+							window.addEventListener('onmousewheel',events[evt].fun,false);
+						else
+							window.addEvent('on'+evt, events[evt].fun);
 					} else if(window.addEventListener){
 						if(evt == 'scroll'){
 							window.addEventListener('mousewheel',events[evt].fun,false);

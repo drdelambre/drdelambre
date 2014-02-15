@@ -69,8 +69,10 @@
 			return model;
 		}
 
-		for(ni = 0; ni < model._pre.length; ni++)
-			model._pre[ni](data);
+		for(ni = 0; ni < model._pre.length; ni++){
+			if(!model._pre[ni].after)
+				model._pre[ni].fun(data);
+		}
 
 		for(ni in model.def){
 			na = ni;
@@ -117,6 +119,11 @@
 			_cleanWrite(model,ni,a);
 		}
 
+		for(ni = 0; ni < model._pre.length; ni++){
+			if(model._pre[ni].after)
+				model._pre[ni].fun(data);
+		}
+
 		return model;
 	}
 
@@ -125,6 +132,12 @@
 		var obj = {},
 			uwrap = watchInterface.unwrap,
 			tmp, ni, na, no, a;
+
+		for(ni = 0; ni < model._post.length; ni++){
+			if(model._post[ni].fire_before)
+				model._post[ni](obj);
+		}
+
 		for(ni in model.def){
 			if(blacklist.test(ni))
 				continue;
@@ -166,8 +179,8 @@
 			}
 		}
 
-		if($dd.type(model._post,'array')){
-			for(ni = 0; ni < model._post.length; ni++)
+		for(ni = 0; ni < model._post.length; ni++){
+			if(!model._post[ni].fire_before)
 				model._post[ni](obj);
 		}
 
@@ -241,14 +254,22 @@
 			}
 			return self;
 		};
-		self.pre = function(filter){
+		//needs to be renamed 'on_in'
+		self.pre = function(filter,fire_after){
 			// here we add filters that edit the json data before it enters
-			self._pre.push(filter);
+			self._pre.push({
+				fun: filter,
+				after: fire_after?1:0
+			});
 			return self;
 		};
-		self.post = function(filter){
+		//needs to be renamed 'on_out'
+		self.post = function(filter,fire_before){
 			// here we add filters that edit the json data before it leaves
-			self._post.push(filter);
+			self._post.push({
+				fun: filter,
+				after: fire_before?1:0
+			});
 			return self;
 		};
 		self.watch = function(_map){
