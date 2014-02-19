@@ -1,8 +1,8 @@
+/* {"requires": ["dd"]} */
 // $dd.pubsub
 //		loose coupling for all your custom modules
 //		make sure to document your messages, as they're
 //		easy to bury in the code
-// requires: $dd
 ;(function(){
 	var cache = {};
 	$dd.mixin({

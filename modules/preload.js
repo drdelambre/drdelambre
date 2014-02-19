@@ -1,7 +1,7 @@
+/* {"requires": ["dd"]} */
 // $dd.preload
 //		just a little helper function that loads images
 //		into memory
-// requires: $dd
 ;(function(){
 	var imgs = {};
 

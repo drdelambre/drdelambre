@@ -1,8 +1,7 @@
+/* {"requires": ["dd","modules/model","modules/dom"]} */
 // $dd.scrollFade
 //		A module that watches your scrollable dom elements
 //		and adds a pretty little fade to the bottom
-// requires: $dd, $dd.model, $dd.dom
-
 ;(function(){
 	function hexToRgb(hex){
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);

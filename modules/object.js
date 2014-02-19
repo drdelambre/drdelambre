@@ -1,9 +1,9 @@
+/* {"requires": ["dd"]} */
 // $dd.object
 //		classical inheritance pattern for javascript. This one makes
 //		really pretty object structures, but bugs in function scope
 //		have been problematic for junior developers, so it has fallen
 //		out of fasion.
-// requires: $dd
 ;(function(){
 	$dd.mixin({
 		object: function(proto){

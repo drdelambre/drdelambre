@@ -1,3 +1,4 @@
+/* {"requires": ["dd"]} */
 // $dd.api:
 //		Basic structure for normalizing ajax calls across xhr,activexobject,jsonp,and cors
 //		There's a basic $dd.api.raw function that sends data to a url via a method, and
@@ -7,7 +8,6 @@
 //		doesn't return true, the call isn't sent. If the post processing function doesn't
 //		return true, the callback isn't called.
 //		This is more of a heap of code to stick into your own api interface.
-// requires: $dd
 ;(function(){
 	function postString(obj, prefix){
 		var str = [], p, k, v;

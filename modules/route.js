@@ -1,3 +1,4 @@
+/* {"requires": ["dd"]} */
 // $dd.route
 //		LETS DO SOME SINGLE PAGE APPS! This module sets up a hashchange
 //		listener and calls functions based on routes. There are some issues
@@ -13,7 +14,6 @@
 // 		/beans/:id/:username?/cool has an optional username param and always
 //			passes an id to the open function. beans and cool are static
 //			strings in the hash
-// requires: $dd
 ;(function(){
 	var paths = {},
 		current = null;

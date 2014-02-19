@@ -1,7 +1,7 @@
+/* {"requires": ["modules/model"]} */
 // $dd.model.knockout_interface
 //		Allows you to use observables to create a reactive web application
 //		using the $dd.model paradigm for your data structure
-// requires: $dd.model
 ;(function(){
 	$dd.model.watchInterface({
 		observe: function(val){

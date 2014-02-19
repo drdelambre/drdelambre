@@ -1,8 +1,8 @@
+/* {"requires": ["dd","polyfill/keys","modules/dom"]} */
 // $dd.touch
 //		Browsers crapped on making themselves touch compatible
 //		why should you suffer?
 //		LETS MAKE IT BETTER
-// requires: $dd, $dd.polyfill.keys, $dd.dom
 ;(function(){
 	$dd.mixin({
 		istouch: !!('ontouchend' in document),

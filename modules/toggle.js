@@ -1,9 +1,8 @@
+/* {"requires": ["dd"]} */
 // $dd.toggle
 //		another one of those helper functions to create a togglable
 //		interface, because these are used a lot for all sorts of
 //		things.
-// requires: $dd
-
 ;(function(){
 	$dd.mixin({
 		toggle: function(on_open,on_close){

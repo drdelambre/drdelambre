@@ -1,7 +1,7 @@
+/* {"requires": ["dd","polyfill/querySelector","polyfill/matchesSelector"]} */
 // $dd.dom
 //		A dom navigator. Experimental. But jquery can crash your phone
 //		and is getting fatter all the time. So make it better.
-// requires: $dd, $dd.polyfills.querySelector, $dd.polyfills.matchesSelector
 ;(function(){
 	var cleanSelector = function(selector,_context){
 		if(!selector.length)

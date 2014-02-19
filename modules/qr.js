@@ -1,8 +1,8 @@
+/* {"requires": ["dd","modules/dom"]} */
 // $dd.qr
 //		Quite a large module for creating QR codes and manuipulating
 //		their display properties. Has a qr code lib injected into the
 //		module. cool yeah?
-// requires: $dd, $dd.dom
 ;(function(qr_lib){
 	var corners = {
 		'standard': function(code,ctx,square,scale){

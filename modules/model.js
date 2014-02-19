@@ -1,9 +1,9 @@
+/* {"requires": ["dd"]} */
 // $dd.model
 //		teh bones of any awesome web app. replaces the $dd.object paradigm
 //		to reduce scope bugs and allow easier state migration through simple
 //		objects. I've used the watch interface pretty extensively with knockout,
 //		but admit i haven't thought the interface all the way through.
-// requires: $dd
 ;(function(){
 	// stuff to exclude from the serialization
 	// and an interface for connecting watchables
