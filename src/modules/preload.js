@@ -2,7 +2,7 @@
 // $dd.preload
 //		just a little helper function that loads images
 //		into memory
-;(function(){
+;(function($dd){
 	var imgs = {};
 
 	$dd.mixin({
@@ -19,20 +19,23 @@
 					var c = imgs[href].onload,
 						ni;
 
-					for(ni = 0; ni < c.length; ni++)
+					for(ni = 0; ni < c.length; ni++){
 						c[ni]();
+					}
 
 					delete imgs[href].onload;
 				};
 				img.src = href;
 			}
-			if(!$dd.type(onload,'function'))
+			if(!$dd.type(onload,'function')){
 				return;
+			}
 
-			if(imgs[href].loaded)
+			if(imgs[href].loaded){
 				onload();
-			else
+			} else {
 				imgs[href].onload.push(onload);
+			}
 		} 
 	});
-})();
+})($dd);

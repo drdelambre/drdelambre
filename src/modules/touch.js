@@ -3,7 +3,7 @@
 //		Browsers crapped on making themselves touch compatible
 //		why should you suffer?
 //		LETS MAKE IT BETTER
-;(function(){
+;(function($dd){
 	$dd.mixin({
 		istouch: !!('ontouchend' in document),
 		touch : function(options){
@@ -26,9 +26,15 @@
 				if($dd.istouch){
 					for(ni = 0; ni < evt.changedTouches.length; ni++){
 						touch = evt.changedTouches[ni];
-						if(self.touches[touch.identifier]) return;
+						if(self.touches[touch.identifier]){
+							return;
+						}
+
 						self.touches[touch.identifier] = touch;
-						if(!$dd.type(self.options.start,'function')) continue;
+						if(!$dd.type(self.options.start,'function')){
+							continue;
+						}
+
 						self.options.start({
 							id: touch.identifier,
 							target: $dd.dom(touch.target),
@@ -38,13 +44,14 @@
 					}
 				} else {
 					self.touches[0] = evt;
-					if($dd.type(self.options.start,'function'))
+					if($dd.type(self.options.start,'function')){
 						self.options.start({
 							id: 0,
 							target: $dd.dom(evt.target),
 							pageX: evt.pageX,
 							pageY: evt.pageY
 						});
+					}
 				}
 
 
@@ -69,26 +76,32 @@
 				} else {
 					for(ni = 0; ni < evt.touches.length; ni++){
 						touch = evt.touches[ni];
-						if(!self.touches[touch.identifier]) continue;
+						if(!self.touches[touch.identifier]){
+							continue;
+						}
 						self.touches[touch.identifier] = touch;
 						self.evts[touch.identifier] = touch;
 					}
 				}
 
-				if(self.throttle)
+				if(self.throttle){
 					return;
+				}
 
 				var t = function(){
 					var no;
 					for(no in self.touches){
-						if(!self.evts[no]) continue;
-						if($dd.type(self.options.move,'function'))
+						if(!self.evts[no]){
+							continue;
+						}
+						if($dd.type(self.options.move,'function')){
 							self.options.move({
 								id: no,
 								target: $dd.dom(self.evts[no].target),
 								pageX: self.evts[no].pageX,
 								pageY: self.evts[no].pageY
 							});
+						}
 					}
 					self.evts = {};
 				};
@@ -100,30 +113,36 @@
 				var win = $dd.dom(window),
 					touch, ni;
 				if(!$dd.istouch){
-					if($dd.type(self.options.end,'function'))
+					if($dd.type(self.options.end,'function')){
 						self.options.end({
 							id: 0,
 							target: evt.target,
 							pageX: evt.pageX,
 							pageY: evt.pageY
 						});
+					}
 					delete self.touches[0];
 				} else {
 					for(ni = 0; ni < evt.changedTouches.length; ni++){
 						touch = evt.changedTouches[ni];
-						if(!self.touches[touch.identifier]) return;
-						if($dd.type(self.options.end,'function'))
+						if(!self.touches[touch.identifier]){
+							return;
+						}
+						if($dd.type(self.options.end,'function')){
 							self.options.end({
 								id: touch.identifier,
 								target: $dd.dom(touch.target),
 								pageX: evt.pageX,
 								pageY: evt.pageY
 							});
+						}
 						delete self.touches[touch.identifier];
 					}
 				}
 
-				if(Object.keys(self.touches).length) return;
+				if(Object.keys(self.touches).length){
+					return;
+				}
 
 				if($dd.istouch){
 					win.off('touchmove', self.move);
@@ -161,4 +180,4 @@
 			return self;
 		}
 	});
-})();
+})($dd);

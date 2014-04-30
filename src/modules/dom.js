@@ -2,10 +2,11 @@
 // $dd.dom
 //		A dom navigator. Experimental. But jquery can crash your phone
 //		and is getting fatter all the time. So make it better.
-;(function(){
+;(function($dd){
 	var cleanSelector = function(selector,_context){
-		if(!selector.length)
+		if(!selector.length){
 			return [];
+		}
 		var sels = selector.split(','),
 			context = _context||document,
 			res = [],
@@ -17,7 +18,9 @@
 				ctx = document.getElementById(sels[ni].substr(idpos).match(/^#[^\s]*/)[0]);
 				sels[ni] = sels[ni].substr(idpos).replace(/^#[^\s]*[\s]*/,'');
 			}
-			if(!sels[ni].length) continue;
+			if(!sels[ni].length){
+				continue;
+			}
 			res = res.concat(Array.prototype.slice.call(ctx.querySelectorAll(sels[ni]),0));
 		}
 
@@ -31,15 +34,16 @@
 			css: function(dom,obj){
 				if($dd.type(obj,'string')){
 					var val = document.defaultView.getComputedStyle(dom[0])[obj.replace(/-(\w)/g,cssCap)];
-					if($dd.type(val,'undefined')||val == 'none')
+					if($dd.type(val,'undefined')||val === 'none'){
 						return;
-					if(!isNaN(parseFloat(val)))
+					}
+					if(!isNaN(parseFloat(val))){
 						return parseFloat(val);
+					}
 					if(/^matrix\(/i.test(val)){
-						console.log(val);
-						var primitives = val.match(/(-?\d*\.?\d+)/g),
-							val = {};
-						if(primitives.length == 6){
+						var primitives = val.match(/(-?\d*\.?\d+)/g);
+						val = {};
+						if(primitives.length === 6){
 							val.translateX = parseFloat(primitives[4]);
 							val.translateY = parseFloat(primitives[5]);
 							val.rotation = Math.atan(primitives[1]/primitives[3]);
@@ -52,8 +56,9 @@
 
 				var ni,no;
 				for(ni = 0; ni < dom._len; ni++){
-					for(no in obj)
+					for(no in obj){
 						dom[ni].style[no.replace(/-(\w)/g,cssCap)] = obj[no];
+					}
 				}
 				return dom;
 			},
@@ -65,8 +70,9 @@
 				dom.removeClass(selector);
 
 				for(ni = 0; ni < len; ni++){
-					for(no = 0; no < sels.length; no++)
+					for(no = 0; no < sels.length; no++){
 						dom[ni].className += ' ' + sels[no].replace(/(^\s*|\s*$)/g,'');
+					}
 				}
 
 				return dom;
@@ -77,8 +83,9 @@
 					ni,no,cname;
 				for(ni = 0; ni < len; ni++){
 					cname = ' ' + dom[ni].className.replace(/\s+/g,' ');
-					for(no = 0; no < sels.length; no++)
+					for(no = 0; no < sels.length; no++){
 						cname = cname.replace(new RegExp('\\s' + sels[no].replace(/(^\s*|\s*$)/g,''),'g'),'');
+					}
 					dom[ni].className = cname.slice(1);
 				}
 
@@ -86,17 +93,20 @@
 			},
 			matches: function(dom,selector){
 				var ni,no;
-				if(!$dd.type(selector,'string'))
+				if(!$dd.type(selector,'string')){
 					selector = $dd.dom(selector);
+				}
 
 				for(ni = 0; ni < dom._len; ni++){
-					if(dom[ni] == window){
-						if(($dd.type(selector,'string') && selector == 'window') || selector[0] == window)
+					if(dom[ni] === window){
+						if(($dd.type(selector,'string') && selector === 'window') || selector[0] === window){
 							return true;
+						}
 					} else if(selector.hasOwnProperty('_len')){
 						for(no = 0; no < selector._len;no++){
-							if(dom[ni] != selector[no])
+							if(dom[ni] !== selector[no]){
 								continue;
+							}
 							return true;
 						}
 					} else if(!!dom[ni].matchesSelector(selector)){
@@ -113,23 +123,29 @@
 					cap = document.documentElement,
 					ni,no,len,curr,depth,found;
 
-				if(typeof selector != 'string' && !selector.hasOwnProperty('_len'))
+				if(typeof selector !== 'string' && !selector.hasOwnProperty('_len')){
 					throw new Error('invalid selector passed to $dd.dom.closest');
+				}
 
 				for(ni = 0; ni < dom._len; ni++){
 					curr = dom[ni];
 					depth = 0;
-					while(curr != cap){
-						if(typeof selector != 'string'){
+					while(curr !== cap){
+						if(typeof selector !== 'string'){
 							found = false;
 							for(no = 0; no < selector._len; no++){
-								if(selector[no] != window && curr != selector[no])
+								if(selector[no] !== window && curr !== selector[no]){
 									continue;
+								}
 								found = true;
 								break;
 							}
-							if(found) break;
-						} else if(curr.matchesSelector(selector)) break;
+							if(found){
+								break;
+							}
+						} else if(curr.matchesSelector(selector)){
+							break;
+						}
 						if(!curr.parentNode){
 							curr = cap;
 							break;
@@ -137,13 +153,17 @@
 						depth++;
 						curr = curr.parentNode;
 					}
-					if(curr == cap) continue;
+					if(curr === cap){
+						continue;
+					}
 					elems.push({ elem: curr, depth: depth });
 				}
 				len = elems.length;
 				for(ni = 0; ni < len; ni++){
 					for(no = ni+1; no < len;no++){
-						if(elems[ni].elem!=elems[no].elem) continue;
+						if(elems[ni].elem !== elems[no].elem){
+							continue;
+						}
 						elems.splice(no--,1);
 						len--;
 					}
@@ -154,20 +174,24 @@
 				var elems = fn.__closest(dom,selector),
 					len, ni;
 
-				curr = DomObj(null,dom);
+				var curr = DomObj(null,dom);
 
-				if(!elems.length)
+				if(!elems.length){
 					return curr;
+				}
 
 				len = curr._len = elems.length;
-				for(ni = 0; ni < len; ni++)
+				for(ni = 0; ni < len; ni++){
 					curr[ni] = elems[ni].elem;
+				}
 				return curr;
 			},
 			remove: function(dom){
 				var ni,len;
 				for(ni = 0, len = dom._len; ni < len; ni++){
-					if(!dom[ni].parentNode) continue;
+					if(!dom[ni].parentNode){
+						continue;
+					}
 					dom[ni].parentNode.removeChild(dom[ni]);
 				}
 				return dom;
@@ -176,22 +200,27 @@
 				var funs = [],
 					ret = {},
 					ni;
+				var delay = function(ctx,name){
+					return function(){
+						funs.push({
+							args: arguments,
+							ctx: ctx,
+							name: name
+						});
+					};
+				};
+
 				for(ni in dom){
-					if(/^(_|init)/.test(ni)) continue;
-					ret[ni] = (function(ctx,name){
-						return function(){
-							funs.push({
-								args: arguments,
-								ctx: ctx,
-								name: name
-							});
-						};
-					})(dom,ni);
+					if(/^(_|init)/.test(ni)){
+						continue;
+					}
+					ret[ni] = delay(dom,ni);
 				}
 				setTimeout(function(){
 					for(ni = 0; ni < funs.length; ni++){
-						if(typeof funs[ni].ctx[funs[ni].name] != 'function')
+						if(typeof funs[ni].ctx[funs[ni].name] !== 'function'){
 							continue;
+						}
 						funs[ni].ctx[funs[ni].name].apply(funs[ni].ctx,funs[ni].args);
 					}
 				},time);
@@ -199,10 +228,13 @@
 			},
 			before: function(dom,elem){
 				var ni, no;
-				if(!elem.hasOwnProperty('_len'))
+				if(!elem.hasOwnProperty('_len')){
 					elem = $dd.dom(elem);
+				}
 				for(ni = 0; ni < dom._len; ni++){
-					if(!dom[ni].parentNode) continue;
+					if(!dom[ni].parentNode){
+						continue;
+					}
 					for(no = 0; no < elem._len; no++){
 						dom[ni].parentNode.insertBefore(elem[no],dom[ni]);
 					}
@@ -211,12 +243,16 @@
 			},
 			after: function(dom,elem){
 				var ni, no;
-				if(!elem.hasOwnProperty('_len'))
+				if(!elem.hasOwnProperty('_len')){
 					elem = $dd.dom(elem);
+				}
 				for(ni = 0; ni < dom._len; ni++){
-					if(!dom[ni].parentNode) continue;
-					for(no = 0; no < elem._len;no++)
+					if(!dom[ni].parentNode){
+						continue;
+					}
+					for(no = 0; no < elem._len;no++){
 						dom[ni].parentNode.insertBefore(elem[no],dom[ni].nextSibling);
+					}
 				}
 			},
 			clone: function(dom){
@@ -238,8 +274,9 @@
 			},
 			measure: function(dom){
 				var box = dom[0].getBoundingClientRect();
-				if(!box)
+				if(!box){
 					return { top: 0, left: 0, width: 0, height: 0 };
+				}
 			
 				var body = dom[0].ownerDocument.body,
 					clientTop  = document.documentElement.clientTop  || body.clientTop  || 0,
@@ -270,24 +307,28 @@
 				};
 			},
 			get: function(dom,index){
-				if(index < 0 || index > dom._len)
+				if(index < 0 || index > dom._len){
 					return;
+				}
 				return DomObj(dom[index],dom);
 			},
 			length: function(dom){ return dom._len; },
 			html: function(dom,str){
-				if($dd.type(str,'undefined'))
+				if($dd.type(str,'undefined')){
 					return dom[0].innerHTML||'';
-				for(var ni = 0; ni < dom._len; ni++)
+				}
+				for(var ni = 0; ni < dom._len; ni++){
 					dom[ni].innerHTML = str;
+				}
 				return dom;
 			},
 			append: function(dom,elem){
 				var ni,no;
 				elem = $dd.dom(elem);
 				for(ni = 0; ni < dom._len; ni++){
-					for(no = 0; no < elem._len; no++)
+					for(no = 0; no < elem._len; no++){
 						dom[ni].appendChild(elem[no]);
+					}
 				}
 				return dom;
 			},
@@ -296,8 +337,9 @@
 					var _evt = window.addEvent?'on'+evt:evt,
 						_list = window.addEvent?'addEvent':'addEventListener',
 						ni;
-					for(ni = 0; ni < dom._len; ni++)
+					for(ni = 0; ni < dom._len; ni++){
 						dom[ni][_list](_evt,fun);
+					}
 
 					return dom;
 				}
@@ -324,12 +366,13 @@
 					})();
 
 					if(window.addEvent){
-						if(evt == 'scroll')
+						if(evt === 'scroll'){
 							window.addEventListener('onmousewheel',events[evt].fun,false);
-						else
+						} else {
 							window.addEvent('on'+evt, events[evt].fun);
+						}
 					} else if(window.addEventListener){
-						if(evt == 'scroll'){
+						if(evt === 'scroll'){
 							window.addEventListener('mousewheel',events[evt].fun,false);
 							window.addEventListener('DOMMouseScroll',events[evt].fun,false);
 						} else {
@@ -342,14 +385,19 @@
 				return dom;
 			},
 			off: function(dom,evt,fun){
-				if(!events[evt] || !events[evt].routes.length)
+				if(!events[evt] || !events[evt].routes.length){
 					return;
+				}
 
 				var r = events[evt].routes,
 					ni,found=false;
 				for(ni = r.length; ni > 0;){
-					if(!dom.matches(r[--ni].dom)) continue;
-					if(fun && r[ni].callback != fun) continue;
+					if(!dom.matches(r[--ni].dom)){
+						continue;
+					}
+					if(fun && r[ni].callback !== fun){
+						continue;
+					}
 					found = true;
 					r.splice(ni,1);
 				}
@@ -373,18 +421,23 @@
 
 		//some static functions
 		var ni;
-		for(ni in fn)
-			(function(dom,index){
-				dom[index] = function(){
-					var args = Array.prototype.slice.call(arguments);
-					args.unshift(dom);
-					return fn[index].apply(dom,args);
-				};
-			})(self,ni);
+		var apply_fns = function(dom,index){
+			dom[index] = function(){
+				var args = Array.prototype.slice.call(arguments);
+				args.unshift(dom);
+				return fn[index].apply(dom,args);
+			};
+		};
+
+		for(ni in fn){
+			apply_fns(self,ni);
+		}
 
 		self._back = context;
 
-		if(!selector) return self;
+		if(!selector){
+			return self;
+		}
 
 		if($dd.type(selector,'node')){
 			self[0] = selector;
@@ -407,9 +460,11 @@
 		//need to add ability to create element or take normal element
 		self._selector = selector;
 
-		if(!selector) return self;
+		if(!selector){
+			return self;
+		}
 
-		var res = [],ni;
+		var res = [];
 		if(context && context._len){
 			for(ni = 0; ni < context._len; ni++){
 				res = res.concat(cleanSelector(selector,context[ni]));
@@ -426,8 +481,9 @@
 	};
 
 	var ret_func = function(selector){
-		if($dd.type(selector,'object') && selector.hasOwnProperty('_len'))
+		if($dd.type(selector,'object') && selector.hasOwnProperty('_len')){
 			return selector;
+		}
 		return DomObj(selector);
 	};
 
@@ -440,4 +496,4 @@
 	});
 
 	return $dd.dom;
-})();
+})($dd);

@@ -16,10 +16,12 @@ $dd.mixin({
 		};
 
 		ret.get = function(lookup){
-			if(!hash.hasOwnProperty(lookup))
+			if(!hash.hasOwnProperty(lookup)){
 				throw new Error('$dd.di: nothing hooked up to ' + lookup);
-			if(!hash[lookup].i)
+			}
+			if(!hash[lookup].i){
 				hash[lookup].i = new hash[lookup].c();
+			}
 			return hash[lookup].i;
 		};
 

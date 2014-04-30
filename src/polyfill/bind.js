@@ -1,7 +1,8 @@
 // bind polyfill for setting function scope
 ;(function(){
-	if(Function.prototype.bind)
+	if(Function.prototype.bind){
 		return;
+	}
 	Function.prototype.bind = function(oThis){
 		if(typeof this !== "function") {
 			// closest thing possible to the ECMAScript 5 internal IsCallable function

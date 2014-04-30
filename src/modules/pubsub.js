@@ -3,7 +3,7 @@
 //		loose coupling for all your custom modules
 //		make sure to document your messages, as they're
 //		easy to bury in the code
-;(function(){
+;(function($dd){
 	var cache = {};
 	$dd.mixin({
 		pub : function(){
@@ -12,26 +12,32 @@
 				ni, t;
 
 			for(t in cache){
-				if(!(new RegExp(t)).test(topic))
+				if(!(new RegExp(t)).test(topic)){
 					continue;
-				for(ni = 0; ni < cache[t].length; ni++)
+				}
+				for(ni = 0; ni < cache[t].length; ni++){
 					cache[t][ni].apply($dd, args);
+				}
 			}
 		},
 		sub : function(topic, callback){
 			topic = '^' + topic.replace(/\*/,'.*');
-			if(!cache[topic])
+			if(!cache[topic]){
 				cache[topic] = [];
+			}
 			cache[topic].push(callback);
 			return [topic, callback];
 		},
 		unsub : function(handle){
 			var t = handle[0], ni;
-			if(!cache[t]) return;
+			if(!cache[t]){
+				return;
+			}
 			for(ni in cache[t]){
-				if(cache[t][ni] == handle[1])
+				if(cache[t][ni] === handle[1]){
 					cache[t].splice(ni, 1);
+				}
 			}
 		}
 	});
-})();
+})($dd);

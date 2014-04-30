@@ -14,7 +14,7 @@
 // 		/beans/:id/:username?/cool has an optional username param and always
 //			passes an id to the open function. beans and cool are static
 //			strings in the hash
-;(function(){
+;(function($dd){
 	var paths = {},
 		current = null;
 
@@ -23,14 +23,15 @@
 			ni,no,args;
 
 		for(ni in paths){
-			if(!paths[ni].regexp.test(hash)) continue;
-			if(ni === '' && hash.length) continue;
-			if(hash === current) continue;
+			if(!paths[ni].regexp.test(hash) || ni === '' && hash.length || hash === current){
+				continue;
+			}
 
 			if(paths[current]){
 				for(no = 0; no < paths[current].after.length; no++){
-					if(typeof paths[current].after[no] == 'function')
+					if(typeof paths[current].after[no] === 'function'){
 						paths[current].after[no]();
+					}
 				}
 			}
 
@@ -43,47 +44,52 @@
 		}
 	}
 
-	if(window.attachEvent)
+	if(window.attachEvent){
 		window.attachEvent('onhashchange',handleChange);
-	else
+	} else {
 		window.addEventListener('hashchange',handleChange,false);
+	}
 
 	$dd.init(function(){ handleChange(); });
 
 	$dd.mixin({
 		route: function(path,open,close){
-			keys = [];
+			var keys = [];
 
-			if($dd.type(path,'array'))
+			if($dd.type(path,'array')){
 				path = '(' + path.join('|') + ')';
+			}
 
 			path = path
 				.replace(/\/\(/g, '(?:/')
-				.replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, function(_, slash, format, key, capture, optional){
+				.replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, function(_, slash, format, key, capture, optional){ // jshint ignore:line
 					keys.push({ name: key, optional: !! optional });
 					slash = slash || '';
-					return ''
-						+ (optional ? '' : slash)
-						+ '(?:'
-						+ (optional ? slash : '')
-						+ (format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')'
-						+ (optional || '');
+					return '' +
+						(optional ? '' : slash) +
+						'(?:' +
+						(optional ? slash : '') +
+						(format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')' +
+						(optional || '');
 					})
 				.replace(/([\/.])/g, '\\$1')
 				.replace(/\*/g, '(.*)');
 			path = '^' + path + '$';
 
-			if(!paths[path])
+			if(!paths[path]){
 				paths[path] = {
 					regexp: new RegExp(path),
 					keys: keys,
 					before: [],
 					after: []
 				};
-			if(typeof open == 'function')
+			}
+			if(typeof open === 'function'){
 				paths[path].before.push(open);
-			if(typeof close == 'function')
+			}
+			if(typeof close === 'function'){
 				paths[path].after.push(close);
+			}
 		}
 	});
-})();
+})($dd);

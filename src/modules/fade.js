@@ -2,7 +2,7 @@
 // $dd.scrollFade
 //		A module that watches your scrollable dom elements
 //		and adds a pretty little fade to the bottom
-;(function(){
+;(function($dd){
 	function hexToRgb(hex){
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result ? {
@@ -19,11 +19,12 @@
 				buffer: 30
 			});
 			self.pre(function(_data){
-				if(_data.element)
+				if(_data.element){
 					$dd.init(function(){
 						self.element = $dd.dom(_data.element);
-						if(self.element.css('position') == 'static')
+						if(self.element.css('position') === 'static'){
 							self.element.css({ 'position': 'relative' });
+						}
 						self.element.on('scroll',function(){
 							setTimeout(function(){
 								self.draw();
@@ -33,6 +34,7 @@
 						self.element.append(self.fader);
 						$dd.dom(window).on('resize',self.draw);
 					});
+				}
 				$dd.init(function(){setTimeout(function(){
 					self.fader.css({
 						background: 'url(' + makeFade() + ') repeat-x',
@@ -67,7 +69,9 @@
 			}
 
 			self.draw = function(){
-				if(!self.element) return;
+				if(!self.element){
+					return;
+				}
 
 				var sH = self.element[0].scrollHeight - self.buffer,
 					sT = self.element[0].scrollTop,
@@ -86,4 +90,4 @@
 			return self.serialize(data);
 		}
 	});
-})();
+})($dd);

@@ -8,7 +8,7 @@
 //		in any permutation you require
 //		caps lock konami code:
 //			[shift][up + up + down + down + left + right + left + right + b + a + enter]
-;(function(){
+;(function($dd){
 	var keyStatus = {},
 		keyMap = {},
 		add = function(evt){
@@ -53,12 +53,11 @@
 				mreg = /(\[[^\]]*\]\[[^\]]*\])/g,
 				modifiers = str.match(mreg),
 				result = str.replace(mreg,'&').split('+'),
-				out = [],
 				ni, no, mod, key;
 
 			for(ni = 0; ni < result.length; ni++){
 				result[ni] = result[ni].replace(/\s+/g,'');
-				if(result[ni] != '&'){
+				if(result[ni] !== '&'){
 					self.seq.push({ key: translate(result[ni]) });
 					continue;
 				}
@@ -66,25 +65,29 @@
 				mod = mod.replace(/\]\[/g,'&').replace(/[\[\]]/g,'').split('&');
 				key = mod[1].split('+');
 				mod = mod[0].split('+');
-				for(no = 0; no < mod.length; no++)
+				for(no = 0; no < mod.length; no++){
 					mod[no] = translate(mod[no]);
-				for(no = 0; no < key.length; no++)
+				}
+				for(no = 0; no < key.length; no++){
 					self.seq.push({ key: translate(key[no]), state: mod });
+				}
 			}
 
 			self.check = function(key){
 				var curr = self.seq[self.pointer],
 					ni, valid, init;
 				//normalize numpad
-				if(key > 95 && key < 106)
+				if(key > 95 && key < 106){
 					key -= 48;
+				}
 
 				if(curr.state){
 					valid = true;
 					init = false;
 					for(ni = 0; ni < curr.state.length; ni++){
-						if(curr.state[ni] == key)
+						if(curr.state[ni] === key){
 							init = true;
+						}
 						valid = valid && keyStatus[curr.state[ni]];
 					}
 
@@ -93,10 +96,10 @@
 						return self.reset();
 					}
 
-					if(!valid || key != curr.key){
+					if(!valid || key !== curr.key){
 						return self.clear();
 					}
-				} else if(key != curr.key){
+				} else if(key !== curr.key){
 					return self.clear();
 				}
 
@@ -104,19 +107,23 @@
 					self.pointer++;
 					return self.reset();
 				}
-				if($dd.type(self.callback,'function'))
+				if($dd.type(self.callback,'function')){
 					self.callback();
+				}
 				self.clear();
 				return true;
 			};
 			self.reset = function(){
-				if(inter)
+				if(inter){
 					clearTimeout(inter);
+				}
 				inter = setTimeout(self.clear,delay);
 				return false;
 			};
 			self.clear = function(){
-				if(!inter) return;
+				if(!inter){
+					return;
+				}
 				clearTimeout(inter);
 				inter = null;
 				self.pointer = 0;
@@ -137,10 +144,11 @@
 
 	$dd.mixin({
 		keys: function(map){
-			for(var ni in map)
+			for(var ni in map){
 				keyMap[ni] = sequence(ni,map[ni]);
+			}
 		}
 	});
 
 	return $dd.keys;
-})();
+})($dd);

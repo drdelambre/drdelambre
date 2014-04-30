@@ -24,42 +24,49 @@
 	self.type = function(variable,type){
 		var t = typeof variable,
 			trap = false,
-			more,ni;
+			more;
 
-		if(t == 'object'){
+		if(t === 'object'){
 			more = Object.prototype.toString.call(variable);
-			if(more == '[object Array]')
+			if(more === '[object Array]'){
 				t = 'array';
-			else if(more == '[object Null]')
+			} else if(more === '[object Null]'){
 				t = 'null';
-			else if(more == '[object Date]')
+			} else if(more === '[object Date]'){
 				t = 'date';
-			else if(variable == window)
+			} else if(variable === window){
 				t = 'node';
+			}
 			else if(variable.nodeType){
-				if(variable.nodeType == 1)
+				if(variable.nodeType === 1){
 					t = 'node';
-				else
+				} else {
 					t = 'textnode';
+				}
 			}
 		}
 
-		if(!type) return t;
+		if(!type){
+			return t;
+		}
 		type = type.split(',');
-		for(more = 0; more < type.length; more++)
-			trap = trap || (type[more] == t);
-		return t == type;
+		for(more = 0; more < type.length; more++){
+			trap = trap || (type[more] === t);
+		}
+		return t === type;
 	};
 
 	// $dd.mixin:
 	//		This is how we extend the namespace to handle new functionality
 	//		it'll overwrite crap, so be carefull
 	self.mixin = function(obj){
-		if(!self.type(obj,'object'))
+		if(!self.type(obj,'object')){
 			throw new Error('$dd.mixin called with incorrect parameters');
+		}
 		for(var ni in obj){
-			if(/(mixin)/.test(ni))
+			if(/(mixin)/.test(ni)){
 				throw new Error('mixin isn\'t allowed for $dd.mixin');
+			}
 			self[ni] = obj[ni];
 		}
 	};
@@ -70,19 +77,23 @@
 	self.init = (function(){
 		var c = [], t, ni;
 		t = setInterval(function(){
-			if(!document.body) return;
+			if(!document.body){
+				return;
+			}
 			clearInterval(t);
 			t = null;
 			setTimeout(function(){
-				for(ni = 0; ni < c.length; ni++)
+				for(ni = 0; ni < c.length; ni++){
 					c[ni]();
+				}
 			},200);
 		},10);
 		return function(_f){
-			if(!t)
+			if(!t){
 				_f();
-			else
+			} else {
 				c.push(_f);
+			}
 		};
 	})();
 
@@ -91,17 +102,20 @@
 	//		them together from right to left
 	//		returns a new object
 	self.extend = function(){
-		if(!arguments.length)
+		if(!arguments.length){
 			throw new Error('$dd.extend called with too few parameters');
+		}
 
 		var out = {},
 			ni,no;
 
 		for(ni = 0; ni < arguments.length; ni++){
-			if(!self.type(arguments[ni],'object'))
+			if(!self.type(arguments[ni],'object')){
 				continue;
-			for(no in arguments[ni])
+			}
+			for(no in arguments[ni]){
 				out[no] = arguments[ni][no];
+			}
 		}
 
 		return out;
@@ -111,19 +125,23 @@
 	//		lets keep our data clean and seperated
 	self.clone = function(obj){
 		var type = self.type(obj);
-		if(!/^(object||array||date)$/.test(type))
+		if(!/^(object||array||date)$/.test(type)){
 			return obj;
-		if(type == 'date')
+		}
+		if(type === 'date'){
 			return (new Date()).setTime(obj.getTime());
-		if(type == 'array')
+		}
+		if(type === 'array'){
 			return obj.slice(0);
+		}
 
 		var copy = {},
 			ni;
 
 		for(ni in obj) {
-			if(obj.hasOwnProperty(ni))
+			if(obj.hasOwnProperty(ni)){
 				copy[ni] = self.clone(obj[ni]);
+			}
 		}
 
 		return copy;
@@ -132,8 +150,9 @@
 	// $dd.expose:
 	//		poluting global has some uses
 	self.expose = function(obj,as){
-		if(global.hasOwnProperty(as))
+		if(global.hasOwnProperty(as)){
 			console.log('$dd.expose: Overwritting global variable [' + as + ']');
+		}
 		global[as] = obj;
 
 		return self;

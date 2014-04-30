@@ -6,9 +6,11 @@
 			var els = document.querySelectorAll(selector),
 				ni,len;
 			for(ni=0, len=els.length; ni<len; ni++ ){
-				if(els[ni] == this)
+				if(els[ni] === this){
 					return true;
+				}
 			}
+
 			return false;
 		};
 })();

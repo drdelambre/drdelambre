@@ -2,15 +2,16 @@
 // $dd.model.knockout_interface
 //		Allows you to use observables to create a reactive web application
 //		using the $dd.model paradigm for your data structure
-;(function(){
+;(function($dd,knockout){
 	$dd.model.watchInterface({
 		observe: function(val){
-			if($dd.type(val,'array'))
-				return ko.observableArray(val);
-			return ko.observable(val);
+			if($dd.type(val,'array')){
+				return knockout.observableArray(val);
+			}
+			return knockout.observable(val);
 		},
 		unwrap: function(val){
-			return ko.utils.unwrapObservable(val);
+			return knockout.utils.unwrapObservable(val);
 		},
 		read: function(vari){
 			return vari();
@@ -19,4 +20,4 @@
 			vari(val);
 		}
 	});
-})();
+})($dd,ko);
