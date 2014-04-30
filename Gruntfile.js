@@ -38,10 +38,16 @@ module.exports = function(grunt){
 				devel: false,
 				phantom: true
 			}
+		},
+		githooks: {
+			all: {
+				'pre-commit': 'lint'
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-githooks');
 
 	grunt.registerTask('lint',['jshint']);
 };
