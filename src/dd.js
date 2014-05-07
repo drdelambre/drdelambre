@@ -34,10 +34,9 @@
 				t = 'null';
 			} else if(more === '[object Date]'){
 				t = 'date';
-			} else if(variable === window){
+			} else if(more === '[object DOMWindow]'){
 				t = 'node';
-			}
-			else if(variable.nodeType){
+			} else if(variable.nodeType){
 				if(variable.nodeType === 1){
 					t = 'node';
 				} else {
@@ -53,7 +52,7 @@
 		for(more = 0; more < type.length; more++){
 			trap = trap || (type[more] === t);
 		}
-		return t === type;
+		return trap;
 	};
 
 	// $dd.mixin:
@@ -88,13 +87,16 @@
 				}
 			},200);
 		},10);
-		return function(_f){
+		var ret = function(_f){
 			if(!t){
 				_f();
 			} else {
 				c.push(_f);
 			}
 		};
+
+		ret.queue = c;
+		return ret;
 	})();
 
 	// $dd.extend:

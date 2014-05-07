@@ -1,5 +1,5 @@
 {
-  "name": "dd.js",
+  "name": "dd",
   "description": "a light weight framework for data driven front ends",
   "author": "Alex Boatwright <drdelambre@gmail.com>",
   "version": "0.1.0",
@@ -10,13 +10,19 @@
   },
   "scripts": {
     "lint": "grunt lint",
-    "test": "grunt test"
+    "test": "grunt test",
+    "postinstall": "grunt githooks"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
     "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-qunit": "~0.4.0",
-    "grunt-githooks": "~0.3.1"
+    "grunt-githooks": "~0.3.1",
+    "grunt-mocha-test": "~0.10.2",
+    "chai": "~1.9.1",
+    "sinon-chai": "~2.5.0",
+    "chai-as-promised": "~4.1.1",
+    "bluebird": "~1.2.0",
+    "noisette": "~0.1.1"
   },
   "license": "MIT",
   "private": true

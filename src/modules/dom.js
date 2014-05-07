@@ -1,3 +1,4 @@
+//$dd.dom
 /* {"requires": ["dd","polyfill/querySelector","polyfill/matchesSelector"]} */
 // $dd.dom
 //		A dom navigator. Experimental. But jquery can crash your phone
@@ -201,13 +202,16 @@
 					ret = {},
 					ni;
 				var delay = function(ctx,name){
-					return function(){
+					var _ret = function(){
 						funs.push({
 							args: arguments,
 							ctx: ctx,
 							name: name
 						});
+						return ret;
 					};
+
+					return _ret;
 				};
 
 				for(ni in dom){
@@ -216,15 +220,43 @@
 					}
 					ret[ni] = delay(dom,ni);
 				}
-				setTimeout(function(){
+
+				dom._pending++;
+
+				var time_func = function(){
 					for(ni = 0; ni < funs.length; ni++){
 						if(typeof funs[ni].ctx[funs[ni].name] !== 'function'){
 							continue;
 						}
-						funs[ni].ctx[funs[ni].name].apply(funs[ni].ctx,funs[ni].args);
+						dom = funs[ni].ctx[funs[ni].name].apply(dom,funs[ni].args);
 					}
-				},time);
+					if(--dom._pending <= 0 && dom._done.length){
+						for(ni = 0; ni < dom._done.length; ni++){
+							dom._done[ni](dom);
+						}
+					}
+				};
+
+				if(window._phantom){
+					setTimeout(function(){
+						setTimeout(time_func,time);
+					},1);
+				} else {
+					setTimeout(time_func,time);					
+				}
+
 				return ret;
+			},
+			done: function(dom,callback){
+				if(!$dd.type(callback,'function')){
+					return dom;
+				}
+				if(dom._pending > 0){
+					dom._done.push(callback);
+				} else {
+					callback(dom);
+				}
+				return dom;
 			},
 			before: function(dom,elem){
 				var ni, no;
@@ -404,6 +436,25 @@
 
 				return dom;
 			},
+			fire: function(dom,evt){
+				function real_fire(obj,_evt){
+					var evObj;
+					if(document.createEvent){
+						evObj = document.createEvent('MouseEvent');
+						evObj.initMouseEvent(_evt, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+						obj.dispatchEvent(evObj);
+					} else if(document.createEventObject){
+						evObj = document.createEventObject();
+						obj.fireEvent('on' + _evt, evObj);
+					}
+				}
+
+				for(var ni = 0; ni < dom._len; ni++){
+					real_fire(dom[ni],evt);
+				}
+
+				return dom;
+			},
 			each: function(dom,callback){
 				for(var ni = 0; ni < dom._len; ni++){
 					callback(dom.get(ni),ni);
@@ -416,7 +467,9 @@
 		var self = {
 			_back: null,
 			_len: 0,
-			_selector: ''
+			_selector: '',
+			_pending: 0,
+			_done: []
 		};
 
 		//some static functions

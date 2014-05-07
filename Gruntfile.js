@@ -41,13 +41,26 @@ module.exports = function(grunt){
 		},
 		githooks: {
 			all: {
-				'pre-commit': 'lint'
+				'pre-commit': 'lint test'
+			}
+		},
+		mochaTest: {
+			functional: {
+				options: {
+					ui: 'bdd',
+					reporter: 'nyan',
+					ignoreLeaks: true,
+					timeout: 5000
+				},
+				src: ['tests/functional/**/*.js']
 			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-githooks');
+	grunt.loadNpmTasks('grunt-mocha-test');
 
 	grunt.registerTask('lint',['jshint']);
+	grunt.registerTask('test',['mochaTest']);
 };
