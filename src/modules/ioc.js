@@ -6,25 +6,27 @@
 //		dependency injection instead, but that gets ugly. This operates
 //		like a service layer. Useful for things like userauth and page
 //		configurations.
-$dd.mixin({
-	ioc: (function(){
-		var ret = {},
-			hash = {};
+;(function(lib){
+	lib.mixin({
+		ioc: (function(){
+			var ret = {},
+				hash = {};
 
-		ret.register = function(lookup,constructor){
-			hash[lookup] = { c: constructor, i: null };
-		};
+			ret.register = function(lookup,constructor){
+				hash[lookup] = { c: constructor, i: null };
+			};
 
-		ret.get = function(lookup){
-			if(!hash.hasOwnProperty(lookup)){
-				throw new Error('$dd.di: nothing hooked up to ' + lookup);
-			}
-			if(!hash[lookup].i){
-				hash[lookup].i = new hash[lookup].c();
-			}
-			return hash[lookup].i;
-		};
+			ret.get = function(lookup){
+				if(!hash.hasOwnProperty(lookup)){
+					throw new Error('$dd.di: nothing hooked up to ' + lookup);
+				}
+				if(!hash[lookup].i){
+					hash[lookup].i = new hash[lookup].c();
+				}
+				return hash[lookup].i;
+			};
 
-		return ret;
-	})()
-});
+			return ret;
+		})()
+	});
+})($dd);

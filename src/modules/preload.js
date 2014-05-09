@@ -2,10 +2,10 @@
 // $dd.preload
 //		just a little helper function that loads images
 //		into memory
-;(function($dd){
+;(function(lib){
 	var imgs = {};
 
-	$dd.mixin({
+	lib.mixin({
 		preload: function(href, onload){
 			if(!imgs.hasOwnProperty(href)){
 				imgs[href] = {
@@ -27,7 +27,7 @@
 				};
 				img.src = href;
 			}
-			if(!$dd.type(onload,'function')){
+			if(!lib.type(onload,'function')){
 				return;
 			}
 

@@ -2,7 +2,7 @@
 // $dd.scrollFade
 //		A module that watches your scrollable dom elements
 //		and adds a pretty little fade to the bottom
-;(function($dd){
+;(function(lib){
 	function hexToRgb(hex){
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result ? {
@@ -11,17 +11,17 @@
 				b: parseInt(result[3], 16)
 			} : null;
 	}
-	$dd.mixin({
+	lib.mixin({
 		scrollFade: function(data){
-			var self = $dd.model({
+			var self = lib.model({
 				size: 60,
 				color: '#ffffff',
 				buffer: 30
 			});
 			self.pre(function(_data){
 				if(_data.element){
-					$dd.init(function(){
-						self.element = $dd.dom(_data.element);
+					lib.init(function(){
+						self.element = lib.dom(_data.element);
 						if(self.element.css('position') === 'static'){
 							self.element.css({ 'position': 'relative' });
 						}
@@ -30,12 +30,12 @@
 								self.draw();
 							},1);
 						});
-						self.fader = $dd.dom('<div class="fade"></div>');
+						self.fader = lib.dom('<div class="fade"></div>');
 						self.element.append(self.fader);
-						$dd.dom(window).on('resize',self.draw);
+						lib.dom(window).on('resize',self.draw);
 					});
 				}
-				$dd.init(function(){setTimeout(function(){
+				lib.init(function(){setTimeout(function(){
 					self.fader.css({
 						background: 'url(' + makeFade() + ') repeat-x',
 						position: 'absolute',

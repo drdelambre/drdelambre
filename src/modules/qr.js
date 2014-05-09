@@ -3,7 +3,7 @@
 //		Quite a large module for creating QR codes and manuipulating
 //		their display properties. Has a qr code lib injected into the
 //		module. cool yeah?
-;(function(qr_lib,$dd){
+;(function(qr_lib,lib){
 	var corners = {
 		'standard': function(code,ctx,square,scale){
 			if(square.type === 'probe'){
@@ -142,22 +142,22 @@
 		}
 	};
 
-	$dd.mixin({
+	lib.mixin({
 		qr: function(options){
 			var StyleObj = function(data){
-				return $dd.model({
+				return lib.model({
 					style: 'standard',
 					innerColor: '#000',
 					outerColor: '#000'
 				}).serialize(data);
 			};
 			var DotStyleObj = function(data){
-				return $dd.model({
+				return lib.model({
 					style: 'standard',
 					color: '#000'
 				}).serialize(data);
 			};
-			var self = $dd.model({
+			var self = lib.model({
 				element: null,
 				correction: 'M',
 				text: '',
@@ -172,11 +172,11 @@
 				if(_data.text|| _data.correction){
 					self.code = new qr_lib(self.correction,self.text);
 				}
-				$dd.init(function(){
+				lib.init(function(){
 					if(!self.element){
 						return;
 					}
-					self.element = $dd.dom(self.element);
+					self.element = lib.dom(self.element);
 					self.draw(self.element);
 				});
 			},1);
