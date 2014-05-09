@@ -1,11 +1,11 @@
-/* {"requires": ["dd"]} */
+/* {"requires": ["dd","polyfill/bind"]} */
 // $dd.object
 //		classical inheritance pattern for javascript. This one makes
 //		really pretty object structures, but bugs in function scope
 //		have been problematic for junior developers, so it has fallen
 //		out of fasion.
-;(function($dd){
-	$dd.mixin({
+;(function(lib){
+	lib.mixin({
 		object: function(proto){
 			var fun = function(){
 				if(!(this instanceof arguments.callee)){	// jshint ignore:line

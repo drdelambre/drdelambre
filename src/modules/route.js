@@ -14,7 +14,7 @@
 // 		/beans/:id/:username?/cool has an optional username param and always
 //			passes an id to the open function. beans and cool are static
 //			strings in the hash
-;(function($dd){
+;(function(lib){
 	var paths = {},
 		current = null;
 
@@ -50,9 +50,9 @@
 		window.addEventListener('hashchange',handleChange,false);
 	}
 
-	$dd.init(function(){ handleChange(); });
+	lib.init(function(){ handleChange(); });
 
-	$dd.mixin({
+	lib.mixin({
 		route: function(path,open,close){
 			var keys = [];
 

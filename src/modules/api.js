@@ -8,12 +8,12 @@
 //		doesn't return true, the call isn't sent. If the post processing function doesn't
 //		return true, the callback isn't called.
 //		This is more of a heap of code to stick into your own api interface.
-;(function($dd){
+;(function(lib){
 	function postString(obj, prefix){
 		var str = [], p, k, v;
-		if($dd.type(obj,'array')){
+		if(lib.type(obj,'array')){
 			if(!prefix){
-				throw new Error('Sorry bu$ddy, your object is wrong and you should feel bad');
+				throw new Error('Sorry buddy, your object is wrong and you should feel bad');
 			}
 
 			for(p = 0; p < obj.length; p++){
@@ -53,6 +53,7 @@
 			}
 
 			var ret = {
+				_jsonp: true,
 				_options: {
 					key: '',
 					url: '',
@@ -78,8 +79,8 @@
 					return;
 				}
 				ret._options.script.parentNode.removeChild(ret._options.script);
-				$dd.api[ret._options.key] = function(){
-					delete $dd.api[ret._options.key];
+				lib.api[ret._options.key] = function(){
+					delete lib.api[ret._options.key];
 				};
 
 				ret.readyState = 1;
@@ -103,20 +104,15 @@
 				document.head.appendChild(ret._options.script);
 			};
 			ret.overrideMimeType = function(){};
-			ret.send = function(data){
+			ret.send = function(){
 				ret._options.key = 'jsonp_'+randomer();
 
-				var _data = postString(data),
-					url = ret._options.url;
+				var url = ret._options.url;
 				url += (url.indexOf('?') === -1?'?':'&');
 				url += 'callback=$dd.api.'+ret._options.key;
 
-				if(_data.length){
-					url += '&'+_data;
-				}
-
-				$dd.api[ret._options.key] = function(data){
-					if(!$dd.type(data,'string')){
+				lib.api[ret._options.key] = function(data){
+					if(!lib.type(data,'string')){
 						data = JSON.stringify(data);
 					}
 					ret.responseText = data;
@@ -128,7 +124,7 @@
 					}
 					ret._options.script.parentNode.removeChild(ret._options.script);
 
-					delete $dd.api[ret._options.key];
+					delete lib.api[ret._options.key];
 				};
 				ret.readyState = 3;
 				if(typeof ret.onreadystatechange === 'function'){
@@ -181,7 +177,7 @@
 		return _ret;
 	}
 	function ajax(params){
-		params = $dd.extend({
+		params = lib.extend({
 			url: '',
 			method: 'GET',
 			type: 'json',
@@ -194,6 +190,9 @@
 		},params);
 
 		var _xhr = xhr(params);
+		if(_xhr.hasOwnProperty('_jsonp')){
+			params.method = 'GET';
+		}
 
 		if(params.method === 'GET'){
 			params.url += '?' + postString(params.data);
@@ -225,7 +224,7 @@
 			url: url,
 			data: data,
 			success: function(result){
-				if($dd.type(callback,'function')){
+				if(lib.type(callback,'function')){
 					callback(result);
 				}
 			}
@@ -250,16 +249,14 @@
 			}
 
 			self.raw(url,params,function(data){
-				if(post(data) && $dd.type(callback,'function')){
+				if(post(data) && lib.type(callback,'function')){
 					callback(data);
 				}
 			},method||'GET');
 		};
 	};
 
-	$dd.mixin({
+	lib.mixin({
 		api : self
 	});
-
-	return $dd.api;
 })($dd);

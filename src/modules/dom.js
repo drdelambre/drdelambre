@@ -3,7 +3,7 @@
 // $dd.dom
 //		A dom navigator. Experimental. But jquery can crash your phone
 //		and is getting fatter all the time. So make it better.
-;(function($dd){
+;(function(lib){
 	var cleanSelector = function(selector,_context){
 		if(!selector.length){
 			return [];
@@ -33,9 +33,9 @@
 	var events = {},
 		fn = {
 			css: function(dom,obj){
-				if($dd.type(obj,'string')){
+				if(lib.type(obj,'string')){
 					var val = document.defaultView.getComputedStyle(dom[0])[obj.replace(/-(\w)/g,cssCap)];
-					if($dd.type(val,'undefined')||val === 'none'){
+					if(lib.type(val,'undefined')||val === 'none'){
 						return;
 					}
 					if(!isNaN(parseFloat(val))){
@@ -94,13 +94,13 @@
 			},
 			matches: function(dom,selector){
 				var ni,no;
-				if(!$dd.type(selector,'string')){
-					selector = $dd.dom(selector);
+				if(!lib.type(selector,'string')){
+					selector = lib.dom(selector);
 				}
 
 				for(ni = 0; ni < dom._len; ni++){
 					if(dom[ni] === window){
-						if(($dd.type(selector,'string') && selector === 'window') || selector[0] === window){
+						if((lib.type(selector,'string') && selector === 'window') || selector[0] === window){
 							return true;
 						}
 					} else if(selector.hasOwnProperty('_len')){
@@ -248,7 +248,7 @@
 				return ret;
 			},
 			done: function(dom,callback){
-				if(!$dd.type(callback,'function')){
+				if(!lib.type(callback,'function')){
 					return dom;
 				}
 				if(dom._pending > 0){
@@ -261,7 +261,7 @@
 			before: function(dom,elem){
 				var ni, no;
 				if(!elem.hasOwnProperty('_len')){
-					elem = $dd.dom(elem);
+					elem = lib.dom(elem);
 				}
 				for(ni = 0; ni < dom._len; ni++){
 					if(!dom[ni].parentNode){
@@ -276,7 +276,7 @@
 			after: function(dom,elem){
 				var ni, no;
 				if(!elem.hasOwnProperty('_len')){
-					elem = $dd.dom(elem);
+					elem = lib.dom(elem);
 				}
 				for(ni = 0; ni < dom._len; ni++){
 					if(!dom[ni].parentNode){
@@ -346,7 +346,7 @@
 			},
 			length: function(dom){ return dom._len; },
 			html: function(dom,str){
-				if($dd.type(str,'undefined')){
+				if(lib.type(str,'undefined')){
 					return dom[0].innerHTML||'';
 				}
 				for(var ni = 0; ni < dom._len; ni++){
@@ -356,7 +356,7 @@
 			},
 			append: function(dom,elem){
 				var ni,no;
-				elem = $dd.dom(elem);
+				elem = lib.dom(elem);
 				for(ni = 0; ni < dom._len; ni++){
 					for(no = 0; no < elem._len; no++){
 						dom[ni].appendChild(elem[no]);
@@ -384,7 +384,7 @@
 							routes: []
 						};
 						s.fun = function(_e){
-							var t = $dd.dom(_e.target),
+							var t = lib.dom(_e.target),
 								ni,na;
 							for(ni = 0; ni < s.routes.length; ni++){
 								na = t.closest(s.routes[ni].dom);
@@ -405,8 +405,7 @@
 						}
 					} else if(window.addEventListener){
 						if(evt === 'scroll'){
-							window.addEventListener('mousewheel',events[evt].fun,false);
-							window.addEventListener('DOMMouseScroll',events[evt].fun,false);
+							window.addEventListener('wheel',events[evt].fun,false);
 						} else {
 							window.addEventListener(evt,events[evt].fun,false);
 						}
@@ -492,7 +491,7 @@
 			return self;
 		}
 
-		if($dd.type(selector,'node')){
+		if(lib.type(selector,'node')){
 			self[0] = selector;
 			self._len = 1;
 			return self;
@@ -534,19 +533,17 @@
 	};
 
 	var ret_func = function(selector){
-		if($dd.type(selector,'object') && selector.hasOwnProperty('_len')){
+		if(lib.type(selector,'object') && selector.hasOwnProperty('_len')){
 			return selector;
 		}
 		return DomObj(selector);
 	};
 
 	ret_func.atPoint = function(x,y){
-		return $dd.dom(document.elementFromPoint(x,y));
+		return lib.dom(document.elementFromPoint(x,y));
 	};
 
-	$dd.mixin({
+	lib.mixin({
 		dom : ret_func
 	});
-
-	return $dd.dom;
 })($dd);

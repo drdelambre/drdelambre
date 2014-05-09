@@ -4,7 +4,7 @@
 //		to reduce scope bugs and allow easier state migration through simple
 //		objects. I've used the watch interface pretty extensively with knockout,
 //		but admit i haven't thought the interface all the way through.
-;(function(){
+;(function(lib){
 	// stuff to exclude from the serialization
 	// and an interface for connecting watchables
 	var blacklist = /^(_.*|def|pre|post|serialize|extend|map|type|watch|errors|validate)$/,
@@ -17,7 +17,7 @@
 
 	// lets only add clean data to our models
 	function _cleanNumbers(obj){
-		var type = $dd.type(obj),
+		var type = lib.type(obj),
 			ni;
 
 		if(/^(b.*|nu.*|f.*)$/.test(type)){
@@ -101,12 +101,12 @@
 				_cleanWrite(model,ni,_cleanNumbers(data[na]));
 				continue;
 			}
-			if(!$dd.type(model.def[ni]['default'], 'array')){
+			if(!lib.type(model.def[ni]['default'], 'array')){
 				if(model.def[ni].type === Date){
-					if($dd.type(data[na],'date')){
+					if(lib.type(data[na],'date')){
 						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na].valueOf())));
-					} else if($dd.type(data[na],'string') && !isNaN(Date.parse(data[na].replace('-','/')))){
-						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na].replace('-','/'))));
+					} else if(lib.type(data[na],'string') && !isNaN(Date.parse(data[na]))){
+						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na])));
 					}
 					continue;
 				}
@@ -118,10 +118,10 @@
 			data[na] = data[na]||[];
 			for(no = 0; no < data[na].length; no++){
 				if(model.def[ni].type === Date){
-					if($dd.type(data[na][no],'date')){
+					if(lib.type(data[na][no],'date')){
 						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na][no].valueOf())));
-					} else if($dd.type(data[na][no],'string') && !isNaN(Date.parse(data[na][no].replace('-','/')))){
-						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na][no].replace('-','/'))));
+					} else if(lib.type(data[na][no],'string') && !isNaN(Date.parse(data[na][no]))){
+						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na][no])));
 					}
 					continue;
 				}
@@ -166,37 +166,37 @@
 				obj[na] = tmp;
 			} else if(tmp.hasOwnProperty('serialize')){
 				obj[na] = tmp.serialize();
-			} else if($dd.type(tmp,'array')){
+			} else if(lib.type(tmp,'array')){
 				obj[na] = [];
 				for(no = 0; no < tmp.length; no++){
 					a = uwrap(tmp[no]);
-					if($dd.type(a,'function')){
+					if(lib.type(a,'function')){
 						continue;
 					}
-					if($dd.type(a,'date')){
+					if(lib.type(a,'date')){
 						a = a.toISOString();
 					}
-					if($dd.type(a,'object') && a.hasOwnProperty('serialize')){
+					if(lib.type(a,'object') && a.hasOwnProperty('serialize')){
 						a = a.serialize();
 					}
 					obj[na].push(a);
 				}
-			} else if($dd.type(tmp,'date')){
+			} else if(lib.type(tmp,'date')){
 				obj[na] = tmp.toISOString();
-			} else if($dd.type(tmp,'object')){
+			} else if(lib.type(tmp,'object')){
 				obj[na] = {};
 				for(no in tmp){
 					a = uwrap(tmp[no]);
-					if($dd.type(a,'function')){
+					if(lib.type(a,'function')){
 						continue;
 					}
-					if($dd.type(a,'object') && a.hasOwnProperty('serialize')){
+					if(lib.type(a,'object') && a.hasOwnProperty('serialize')){
 						a = a.serialize();
 					}
 					obj[na][no] = a;
 				}
 			} else {
-				if($dd.type(tmp,'function')){
+				if(lib.type(tmp,'function')){
 					continue;
 				}
 				obj[na] = tmp;
@@ -242,7 +242,7 @@
 				}
 
 				self.def[ni] = {
-					'default':$dd.clone(_def[ni]),
+					'default':lib.clone(_def[ni]),
 					watch: false,
 					type: null,
 					external: [],
@@ -270,7 +270,7 @@
 				if(!self.def.hasOwnProperty(ni)){
 					continue;
 				}
-				if(!$dd.type(_maps[ni],'array')){
+				if(!lib.type(_maps[ni],'array')){
 					_maps[ni] = [_maps[ni]];
 				}
 				self.def[ni].external = _maps[ni];
@@ -341,7 +341,7 @@
 					v = self.def[ni].validation||[];
 					for(no = 0; no < v.length; no++){
 						e = v[no](_cleanRead(self,ni));
-						if(!$dd.type(e,'array')){
+						if(!lib.type(e,'array')){
 							continue;
 						}
 						self.errors = self.errors.concat(e);
@@ -368,7 +368,7 @@
 		return ret;
 	};
 
-	$dd.mixin({
+	lib.mixin({
 		model : ret
 	});
-})();
+})($dd);

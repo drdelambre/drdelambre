@@ -3,9 +3,9 @@
 //		loose coupling for all your custom modules
 //		make sure to document your messages, as they're
 //		easy to bury in the code
-;(function($dd){
+;(function(lib){
 	var cache = {};
-	$dd.mixin({
+	lib.mixin({
 		pub : function(){
 			var topic = arguments[0],
 				args = Array.prototype.slice.call(arguments, 1)||[],

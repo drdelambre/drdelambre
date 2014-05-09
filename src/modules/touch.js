@@ -3,15 +3,15 @@
 //		Browsers crapped on making themselves touch compatible
 //		why should you suffer?
 //		LETS MAKE IT BETTER
-;(function($dd){
-	$dd.mixin({
+;(function(lib){
+	lib.mixin({
 		istouch: !!('ontouchend' in document),
 		touch : function(options){
 			var self = {
 				touches: {},
 				throttle: null,
-				options: $dd.extend({
-					element: $dd.dom(window),
+				options: lib.extend({
+					element: lib.dom(window),
 					start: null,
 					move: null,
 					end: null
@@ -21,9 +21,9 @@
 			self.start = function(evt){
 				evt.preventDefault();
 				var count = Object.keys(self.touches).length,
-					win = $dd.dom(window),
+					win = lib.dom(window),
 					ni, touch;
-				if($dd.istouch){
+				if(lib.istouch){
 					for(ni = 0; ni < evt.changedTouches.length; ni++){
 						touch = evt.changedTouches[ni];
 						if(self.touches[touch.identifier]){
@@ -31,23 +31,23 @@
 						}
 
 						self.touches[touch.identifier] = touch;
-						if(!$dd.type(self.options.start,'function')){
+						if(!lib.type(self.options.start,'function')){
 							continue;
 						}
 
 						self.options.start({
 							id: touch.identifier,
-							target: $dd.dom(touch.target),
+							target: lib.dom(touch.target),
 							pageX: touch.pageX,
 							pageY: touch.pageY
 						});
 					}
 				} else {
 					self.touches[0] = evt;
-					if($dd.type(self.options.start,'function')){
+					if(lib.type(self.options.start,'function')){
 						self.options.start({
 							id: 0,
-							target: $dd.dom(evt.target),
+							target: lib.dom(evt.target),
 							pageX: evt.pageX,
 							pageY: evt.pageY
 						});
@@ -55,13 +55,13 @@
 				}
 
 
-				if(count === 0 && $dd.istouch){
+				if(count === 0 && lib.istouch){
 					win.on('touchmove', self.move);
 					win.on('touchend', self.end);
 					win.on('touchcancel', self.end);
 
 					self.evts = {};
-				} else if(!$dd.istouch){
+				} else if(!lib.istouch){
 					win.on('mousemove', self.move);
 					win.on('mouseup', self.end);
 				}
@@ -71,7 +71,7 @@
 			self.move = function(evt){
 				var ni, touch;
 				evt.preventDefault();
-				if(!$dd.istouch){
+				if(!lib.istouch){
 					self.evts = { 0:evt };
 				} else {
 					for(ni = 0; ni < evt.touches.length; ni++){
@@ -94,10 +94,10 @@
 						if(!self.evts[no]){
 							continue;
 						}
-						if($dd.type(self.options.move,'function')){
+						if(lib.type(self.options.move,'function')){
 							self.options.move({
 								id: no,
-								target: $dd.dom(self.evts[no].target),
+								target: lib.dom(self.evts[no].target),
 								pageX: self.evts[no].pageX,
 								pageY: self.evts[no].pageY
 							});
@@ -110,10 +110,10 @@
 				t();
 			};
 			self.end = function(evt){
-				var win = $dd.dom(window),
+				var win = lib.dom(window),
 					touch, ni;
-				if(!$dd.istouch){
-					if($dd.type(self.options.end,'function')){
+				if(!lib.istouch){
+					if(lib.type(self.options.end,'function')){
 						self.options.end({
 							id: 0,
 							target: evt.target,
@@ -128,10 +128,10 @@
 						if(!self.touches[touch.identifier]){
 							return;
 						}
-						if($dd.type(self.options.end,'function')){
+						if(lib.type(self.options.end,'function')){
 							self.options.end({
 								id: touch.identifier,
-								target: $dd.dom(touch.target),
+								target: lib.dom(touch.target),
 								pageX: evt.pageX,
 								pageY: evt.pageY
 							});
@@ -144,7 +144,7 @@
 					return;
 				}
 
-				if($dd.istouch){
+				if(lib.istouch){
 					win.off('touchmove', self.move);
 					win.off('touchend', self.end);
 					win.off('touchcancel', self.end);
@@ -161,8 +161,8 @@
 				}
 			};
 			self.remove = function(){
-				var win = $dd.dom(window);
-				if(!$dd.istouch){
+				var win = lib.dom(window);
+				if(!lib.istouch){
 					self.options.element.off('mousedown', self.start);
 					win.off('mousemove', this.move);
 					win.off('mouseup', this.end);
@@ -176,7 +176,7 @@
 				win.off('touchcancel', this.end);
 			};
 
-			self.options.element.on($dd.istouch?'touchstart':'mousedown', self.start);
+			self.options.element.on(lib.istouch?'touchstart':'mousedown', self.start);
 			return self;
 		}
 	});

@@ -8,7 +8,7 @@
 //		in any permutation you require
 //		caps lock konami code:
 //			[shift][up + up + down + down + left + right + left + right + b + a + enter]
-;(function($dd){
+;(function(lib){
 	var keyStatus = {},
 		keyMap = {},
 		add = function(evt){
@@ -107,7 +107,7 @@
 					self.pointer++;
 					return self.reset();
 				}
-				if($dd.type(self.callback,'function')){
+				if(lib.type(self.callback,'function')){
 					self.callback();
 				}
 				self.clear();
@@ -132,7 +132,7 @@
 			return self;
 		};
 
-	$dd.init(function(){
+	lib.init(function(){
 		if(window.addEventListener){
 			window.addEventListener('keydown',add, false);
 			window.addEventListener('keyup',remove, false);
@@ -142,13 +142,11 @@
 		}
 	});
 
-	$dd.mixin({
+	lib.mixin({
 		keys: function(map){
 			for(var ni in map){
 				keyMap[ni] = sequence(ni,map[ni]);
 			}
 		}
 	});
-
-	return $dd.keys;
 })($dd);
