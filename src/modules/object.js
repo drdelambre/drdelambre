@@ -1,10 +1,15 @@
-/* {"requires": ["dd","polyfill/bind"]} */
 // $dd.object
 //		classical inheritance pattern for javascript. This one makes
 //		really pretty object structures, but bugs in function scope
 //		have been problematic for junior developers, so it has fallen
 //		out of fasion.
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd','../polyfill/bind'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	lib.mixin({
 		object: function(proto){
 			var fun = function(){
@@ -41,4 +46,4 @@
 			return fun;
 		}
 	});
-})($dd);
+});

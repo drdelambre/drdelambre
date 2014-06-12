@@ -1,4 +1,3 @@
-/* {"requires":["dd"]} */
 // $dd.ioc
 //		Sometimes modules have to talk to each other. Instead of polluting
 //		the global namespace, we use an inversion of control pattern to
@@ -6,7 +5,13 @@
 //		dependency injection instead, but that gets ugly. This operates
 //		like a service layer. Useful for things like userauth and page
 //		configurations.
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	lib.mixin({
 		ioc: (function(){
 			var ret = {},
@@ -29,4 +34,4 @@
 			return ret;
 		})()
 	});
-})($dd);
+});

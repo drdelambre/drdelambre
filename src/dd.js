@@ -14,7 +14,13 @@
 
 	Checkout the modules folder for the fun stuff!
 \**------------------------------------------------------------------------**/
-;(function(global){
+;(function(global,factory){
+	if(typeof define === 'function' && define.amd) {
+		define([], function(){ return factory(global); });
+	} else {
+		factory(global);
+	}
+})(typeof window !== "undefined" ? window : this, function(global){
 	var self = {};
 
 	// $dd.type:
@@ -34,7 +40,7 @@
 				t = 'null';
 			} else if(more === '[object Date]'){
 				t = 'date';
-			} else if(more === '[object DOMWindow]'){
+			} else if(more === '[object DOMWindow]' || more === '[object global]'){
 				t = 'node';
 			} else if(variable.nodeType){
 				if(variable.nodeType === 1){
@@ -161,4 +167,6 @@
 	};
 
 	self.expose(self,'$dd');
-})(typeof window !== "undefined" ? window : this);
+
+	return self;
+});

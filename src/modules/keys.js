@@ -1,4 +1,3 @@
-/* {"requires": ["dd"]} */
 // $dd.keys
 //		Why not add some hotkey bindings? This one is super cool and allows for all
 //		sorts of crazy combinations. The basic syntax is:
@@ -8,7 +7,13 @@
 //		in any permutation you require
 //		caps lock konami code:
 //			[shift][up + up + down + down + left + right + left + right + b + a + enter]
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	var keyStatus = {},
 		keyMap = {},
 		add = function(evt){
@@ -149,4 +154,4 @@
 			}
 		}
 	});
-})($dd);
+});

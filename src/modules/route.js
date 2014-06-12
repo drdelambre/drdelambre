@@ -14,7 +14,13 @@
 // 		/beans/:id/:username?/cool has an optional username param and always
 //			passes an id to the open function. beans and cool are static
 //			strings in the hash
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	var paths = {},
 		current = null;
 
@@ -92,4 +98,4 @@
 			}
 		}
 	});
-})($dd);
+});

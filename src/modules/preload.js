@@ -1,8 +1,13 @@
-/* {"requires": ["dd"]} */
 // $dd.preload
 //		just a little helper function that loads images
 //		into memory
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	var imgs = {};
 
 	lib.mixin({
@@ -38,4 +43,4 @@
 			}
 		} 
 	});
-})($dd);
+});

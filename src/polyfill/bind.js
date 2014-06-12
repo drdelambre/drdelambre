@@ -1,9 +1,9 @@
 // bind polyfill for setting function scope
-;(function(){
+define([],function(){
 	if(Function.prototype.bind){
 		return;
 	}
-	Function.prototype.bind = function(oThis){
+	Function.prototype.bind = function(oThis){		// jshint ignore:line
 		if(typeof this !== "function") {
 			// closest thing possible to the ECMAScript 5 internal IsCallable function
 			throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
@@ -22,4 +22,4 @@
 	
 		return fBound;
 	};
-})();
+});

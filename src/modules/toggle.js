@@ -1,9 +1,14 @@
-/* {"requires": ["dd"]} */
 // $dd.toggle
 //		another one of those helper functions to create a togglable
 //		interface, because these are used a lot for all sorts of
 //		things.
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	lib.mixin({
 		toggle: function(on_open,on_close){
 			var ret = function(){
@@ -40,4 +45,4 @@
 			return ret;
 		}
 	});
-})($dd);
+});

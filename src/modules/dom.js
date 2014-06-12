@@ -1,9 +1,13 @@
-//$dd.dom
-/* {"requires": ["dd","polyfill/querySelector","polyfill/matchesSelector"]} */
 // $dd.dom
 //		A dom navigator. Experimental. But jquery can crash your phone
 //		and is getting fatter all the time. So make it better.
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd','../polyfill/querySelector','../polyfill/matchesSelector'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	var cleanSelector = function(selector,_context){
 		if(!selector.length){
 			return [];
@@ -287,6 +291,58 @@
 					}
 				}
 			},
+			next: function(dom,selector){
+				if(!dom[0]){
+					return DomObj();
+				}
+				var curr = dom[0].nextSibling;
+				while(curr){
+					if(!lib.type(curr,'node') || (selector && !DomObj(curr).matches(selector))){
+						curr = curr.nextSibling;
+						continue;
+					}
+
+					return DomObj(curr);
+				}
+
+				return DomObj();
+			},
+			nextAll: function(dom,selector){
+				var out = DomObj(),
+					curr = dom.next(selector);
+				while(curr._len){
+					out[out._len] = curr[0];
+					out._len ++;
+					curr = curr.next(selector);
+				}
+				return out;
+			},
+			prev: function(dom,selector){
+				if(!dom[0]){
+					return DomObj();
+				}
+				var curr = dom[0].previousSibling;
+				while(curr){
+					if(!lib.type(curr,'node') || (selector && !DomObj(curr).matches(selector))){
+						curr = curr.previousSibling;
+						continue;
+					}
+
+					return DomObj(curr);
+				}
+
+				return DomObj();
+			},
+			prevAll: function(dom,selector){
+				var out = DomObj(),
+					curr = dom.prev(selector);
+				while(curr._len){
+					out[out._len] = curr[0];
+					out._len++;
+					curr = curr.prev(selector);
+				}
+				return out;
+			},
 			clone: function(dom){
 				var newDom = DomObj(),
 					ni,no,temp,attr;
@@ -546,4 +602,4 @@
 	lib.mixin({
 		dom : ret_func
 	});
-})($dd);
+});

@@ -3,7 +3,13 @@
 //		Browsers crapped on making themselves touch compatible
 //		why should you suffer?
 //		LETS MAKE IT BETTER
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd','../polyfill/keys','./dom'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	lib.mixin({
 		istouch: !!('ontouchend' in document),
 		touch : function(options){
@@ -180,4 +186,4 @@
 			return self;
 		}
 	});
-})($dd);
+});

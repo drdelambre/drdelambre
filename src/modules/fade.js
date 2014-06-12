@@ -1,8 +1,13 @@
-/* {"requires": ["dd","modules/model","modules/dom"]} */
 // $dd.scrollFade
 //		A module that watches your scrollable dom elements
 //		and adds a pretty little fade to the bottom
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd','./model','./dom'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	function hexToRgb(hex){
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		return result ? {
@@ -90,4 +95,4 @@
 			return self.serialize(data);
 		}
 	});
-})($dd);
+});

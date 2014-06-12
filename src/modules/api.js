@@ -1,4 +1,3 @@
-/* {"requires": ["$dd"]} */
 // $dd.api:
 //		Basic structure for normalizing ajax calls across xhr,activexobject,jsonp,and cors
 //		There's a basic $dd.api.raw function that sends data to a url via a method, and
@@ -8,7 +7,13 @@
 //		doesn't return true, the call isn't sent. If the post processing function doesn't
 //		return true, the callback isn't called.
 //		This is more of a heap of code to stick into your own api interface.
-;(function(lib){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define(['../dd'], factory);
+	} else {
+		factory($dd);
+	}
+})(function(lib){
 	function postString(obj, prefix){
 		var str = [], p, k, v;
 		if(lib.type(obj,'array')){
@@ -170,7 +175,7 @@
 			} : createStandardXHR;
 		_ret = _ret();
 
-		if(!_ret || (crossDomain && !_ret.hasOwnProperty('withCredentials'))){
+		if(!_ret || (crossDomain && typeof _ret.withCredentials === 'undefined')){
 			_ret = createJSONP();
 		}
 
@@ -259,4 +264,4 @@
 	lib.mixin({
 		api : self
 	});
-})($dd);
+});
