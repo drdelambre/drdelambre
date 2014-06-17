@@ -289,16 +289,14 @@
 			}
 			return self;
 		};
-		//needs to be renamed 'on_in'
 		self.on_fill = function(filter,fire_after){
 			// here we add filters that edit the json data before it enters
-			self._pre_fill.push({
+			self._pre.push({
 				fun: filter,
 				after: fire_after?1:0
 			});
 			return self;
 		};
-		//needs to be renamed 'on_out'
 		self.on_out = function(filter,fire_before){
 			// here we add filters that edit the json data before it leaves
 			self._post.push({
