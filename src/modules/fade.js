@@ -23,7 +23,7 @@
 				color: '#ffffff',
 				buffer: 30
 			});
-			self.pre(function(_data){
+			self.on_fill(function(_data){
 				if(_data.element){
 					lib.init(function(){
 						self.element = lib.dom(_data.element);
@@ -92,7 +92,7 @@
 				});
 			};
 
-			return self.serialize(data);
+			return self.fill(data);
 		}
 	});
 });

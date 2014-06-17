@@ -12,7 +12,7 @@
 })(function(lib){
 	// stuff to exclude from the serialization
 	// and an interface for connecting watchables
-	var blacklist = /^(_.*|def|pre|post|serialize|extend|map|type|watch|errors|validate)$/,
+	var blacklist = /^(_.*|def|on_fill|on_out|fill|out|extend|attach|map|type|watch|errors|validate)$/,
 		watchInterface = {
 			observe: function(val){ return val; },
 			unwrap: function(val){ return val; },
@@ -73,13 +73,6 @@
 	// does the heavy lifting for importing an object into a model
 	function _sin(model,data){
 		var ni, na, no, a;
-		if(!data){
-			// reset to default values
-			for(ni in model.def){
-				_cleanWrite(model,ni,model.def[ni]['default']);
-			}
-			return model;
-		}
 
 		for(ni = 0; ni < model._pre.length; ni++){
 			if(!model._pre[ni].after){
@@ -169,8 +162,8 @@
 			//gotta look for models WITHIN models
 			if(!tmp){
 				obj[na] = tmp;
-			} else if(tmp.hasOwnProperty('serialize')){
-				obj[na] = tmp.serialize();
+			} else if(tmp.hasOwnProperty('out')){
+				obj[na] = tmp.out();
 			} else if(lib.type(tmp,'array')){
 				obj[na] = [];
 				for(no = 0; no < tmp.length; no++){
@@ -181,8 +174,8 @@
 					if(lib.type(a,'date')){
 						a = a.toISOString();
 					}
-					if(lib.type(a,'object') && a.hasOwnProperty('serialize')){
-						a = a.serialize();
+					if(lib.type(a,'object') && a.hasOwnProperty('out')){
+						a = a.out();
 					}
 					obj[na].push(a);
 				}
@@ -195,8 +188,8 @@
 					if(lib.type(a,'function')){
 						continue;
 					}
-					if(lib.type(a,'object') && a.hasOwnProperty('serialize')){
-						a = a.serialize();
+					if(lib.type(a,'object') && a.hasOwnProperty('out')){
+						a = a.out();
 					}
 					obj[na][no] = a;
 				}
@@ -226,14 +219,17 @@
 			def: {}
 		};
 
-		// all these functions chain!!!! GO NUTS!
-		self.serialize = function(data){
-			// no arguments, you export data from the model
-			// with an object, you import
-			if(arguments.length === 0){
-				return _sout(self);
-			}
+		self.fill = function(data){
 			return _sin(self,data);
+		};
+		self.out = function(){
+			return _sout(self);
+		};
+		self.clear = function(){
+			for(var ni in self.def){
+				_cleanWrite(self,ni,self.def[ni]['default']);
+			}
+			return self;
 		};
 		self.extend = function(_def){
 			// use models to make bigger models!
@@ -294,16 +290,16 @@
 			return self;
 		};
 		//needs to be renamed 'on_in'
-		self.pre = function(filter,fire_after){
+		self.on_fill = function(filter,fire_after){
 			// here we add filters that edit the json data before it enters
-			self._pre.push({
+			self._pre_fill.push({
 				fun: filter,
 				after: fire_after?1:0
 			});
 			return self;
 		};
 		//needs to be renamed 'on_out'
-		self.post = function(filter,fire_before){
+		self.on_out = function(filter,fire_before){
 			// here we add filters that edit the json data before it leaves
 			self._post.push({
 				fun: filter,

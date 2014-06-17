@@ -1290,13 +1290,13 @@
 					style: 'standard',
 					innerColor: '#000',
 					outerColor: '#000'
-				}).serialize(data);
+				}).fill(data);
 			};
 			var DotStyleObj = function(data){
 				return lib.model({
 					style: 'standard',
 					color: '#000'
-				}).serialize(data);
+				}).fill(data);
 			};
 			var self = lib.model({
 				element: null,
@@ -1346,7 +1346,7 @@
 				self.element[0].src = c.toDataURL();
 			};
 
-			return self.serialize(options);
+			return self.fill(options);
 		}
 	});
 });

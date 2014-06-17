@@ -185,14 +185,26 @@ $dd.keys({
 ```
 
 ### model
-> Data driven inheritance patterns, the core of any large web application
+> Data driven inheritance patterns, the core of any large web application. There are some cool functions that make models easier to connect to.
+
+```$dd.model({ fieldname: default_value })``` defines a model  
+```.fill(obj)``` fills the model with a basic javascript object  
+```.on_fill(fun,fire_after)``` define a function to operate on the incoming data, before and after it is loaded into the model  
+```.out()``` returns a clean javascript object from your model  
+```.on_out(fun,fire_before)``` define a function to operate on the outgoing data, before and after it is returned from out  
+```.map({ fieldname: 'outside_fieldname' })``` when your data source uses nonsensical variable names, use this to clean it up  
+```.type({ fieldname: fun })``` define a constructor for fields. usefull for setting up model hierarchies. handles arrays automatically if defined as such in the model.  
+```.extend(def)``` extends the definition of a model for inheritance  
+```.attach(obj)``` save youself from typing _self_ over and over. just tacks things onto the object.  
+```.validate({ fieldname: fun })``` defines a validation function for fields. the function returns an array of strings on error **pending change**  
+```.validate()``` runs the validation functions. if it returns _false_, check _.errors_ **pending change**
 
 ```Javascript
 var Bean = function(data){
 	var self = $dd.model({
 		name: '',
 		flavor: 0
-	}).pre(function(_data){
+	}).on_fill(function(_data){
 		if(_data.name){
 			var _name = _data.name.toLowerCase();
 			_data.name = _name.charAt(0).toUpperCase() + _name.slice(1);
@@ -200,19 +212,25 @@ var Bean = function(data){
 		_data.flavor = Math.min(0,Math.max(_data.flavor||0,10));
 	});
 
-	self.enhance = function(){ self.serialize({ flavor: self.flavor + 1 }); };
+	self.enhance = function(){ self.fill({ flavor: self.flavor + 1 }); };
 
-	return self.serialize(data);
+	return self.fill(data);
 };
 var Burrito = function(data){
-	return $dd.model({
+	var self = $dd.model({
 		name: '',
 		items: []
 	}).map({
 		items: 'stuff'
 	}).type({
 		items: Bean
-	}).serialize(data);
+	}).fill(data);
+
+	self.clone = function(){
+		return Burrito(self.out());
+	};
+
+	return self;
 };
 var BeanBurrito = Burrito({
 	name: 'Bean Burrito',
