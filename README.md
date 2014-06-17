@@ -88,6 +88,7 @@ if($dd.istouch){
 ## The Core Modules
 While $dd is fine and all, it's really just a variable to put stuff. Here's where it gets interesting. You can check out the _modules_ directory to find all of the modules and poke around to get a better understanding of how they work, this is just a brief usage overview.
 ### route
+------  
 > hash based router for doing single paged applications
 
 ```Javascript
@@ -102,6 +103,7 @@ $dd.route('/user/:id/edit',function(id){
 ```  
 
 ### dom
+------  
 > A DOM maninipulation library that's mean and lean. Like 7KB lean.
 
 ```Javascript
@@ -117,6 +119,7 @@ $dd.dom('#start-page').delay(100).fire('scroll');
 ```
 
 ### pubsub
+------  
 > Publish/Subscribe module for multi-casting events and loose coupling of your data structures. Declaring a channel is now required in an attempt to retain documentation of the different events.
 
 ```Javascript
@@ -157,6 +160,7 @@ $dd.channel('/chat/:status','Fired whenever a chat object is created or destroye
 ```
 
 ### ioc
+------  
 > Inversion of control is the answer to singletons. Useful for creating a decoupled service layer in your application (settings, user authentication, etc).
 
 ```Javascript
@@ -175,6 +179,7 @@ $dd.channel('/chat/:status','Fired whenever a chat object is created or destroye
 ```
 
 ### keys
+------  
 > Drop in crazy keyboard combinations as quickly as hooking up a _mousedown_ event binding
 
 ```Javascript
@@ -185,6 +190,7 @@ $dd.keys({
 ```
 
 ### model
+------  
 > Data driven inheritance patterns, the core of any large web application. There are some cool functions that make models easier to connect to.
 
 ```$dd.model({ fieldname: default_value })``` defines a model  
