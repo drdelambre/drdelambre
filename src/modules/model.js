@@ -220,6 +220,7 @@
 		};
 
 		self.fill = function(data){
+			data = data||{};
 			return _sin(self,data);
 		};
 		self.out = function(){

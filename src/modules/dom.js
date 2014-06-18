@@ -510,6 +510,14 @@
 
 				return dom;
 			},
+			focus: function(dom){
+				for(var ni = 0; ni < dom._len; ni++){
+					if(/(input|textarea)/i.test(dom[ni].nodeName)){
+						dom[ni].focus();
+						return dom;
+					}
+				}
+			},
 			each: function(dom,callback){
 				for(var ni = 0; ni < dom._len; ni++){
 					callback(dom.get(ni),ni);
@@ -557,9 +565,10 @@
 			var elem = document.createElement('div'),
 				no,c;
 			elem.innerHTML = selector.replace(/(^\s*|\s*$)/g,'');
-			c = elem.childNodes;
+			c = Array.prototype.slice.call(elem.childNodes,0);
 			self._len = c.length;
 			for(no = 0; no < self._len; no++){
+				c[no].parentNode.removeChild(c[no]);
 				self[no] = c[no];
 			}
 			return self;
