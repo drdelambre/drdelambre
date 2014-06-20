@@ -13,68 +13,71 @@
 	lib.mixin({
 		istouch: !!('ontouchend' in document),
 		touch : function(options){
-			var self = {
-				touches: {},
-				throttle: null,
-				options: lib.extend({
-					element: lib.dom(window),
+			var touches = {},
+				evts = {},
+				throttle = null,
+				win = lib.dom(window),
+				self = lib.extend({
+					element: window,
 					start: null,
 					move: null,
-					end: null
-				},options)
-			};
+					end: null,
+					click: null
+				},options);
 
-			self.start = function(evt){
+			function makeEvt(evt){
+				return {
+					id: lib.istouch?evt.identifier:0,
+					target: lib.dom(evt.target),
+					pageX: evt.pageX,
+					pageY: evt.pageY
+				};
+			}
+
+			function start(evt){
 				evt.preventDefault();
-				var count = Object.keys(self.touches).length,
-					win = lib.dom(window),
-					ni, touch;
+				var ni, touch;
 				if(lib.istouch){
 					for(ni = 0; ni < evt.changedTouches.length; ni++){
 						touch = evt.changedTouches[ni];
-						if(self.touches[touch.identifier]){
+						touch.has_moved = false;
+
+						//this should never happen
+						if(touches[touch.identifier]){
 							return;
 						}
 
-						self.touches[touch.identifier] = touch;
-						if(!lib.type(self.options.start,'function')){
+						touches[touch.identifier] = touch;
+						if(!lib.type(self.start,'function')){
 							continue;
 						}
 
-						self.options.start({
-							id: touch.identifier,
-							target: lib.dom(touch.target),
-							pageX: touch.pageX,
-							pageY: touch.pageY
-						});
+						self.start(makeEvt(touch));
 					}
 				} else {
-					self.touches[0] = evt;
-					if(lib.type(self.options.start,'function')){
-						self.options.start({
-							id: 0,
-							target: lib.dom(evt.target),
-							pageX: evt.pageX,
-							pageY: evt.pageY
-						});
+					touches[0] = evt;
+					evt.has_moved = false;
+
+					if(lib.type(self.start,'function')){
+						self.start(makeEvt(evt));
 					}
 				}
 
 
-				if(count === 0 && lib.istouch){
-					win.on('touchmove', self.move);
-					win.on('touchend', self.end);
-					win.on('touchcancel', self.end);
+				if(Object.keys(touches).length === 0 && lib.istouch){
+					win.on('touchmove', move);
+					win.on('touchend', end);
+					win.on('touchcancel', end);
 
-					self.evts = {};
+					evts = {};
 				} else if(!lib.istouch){
-					win.on('mousemove', self.move);
-					win.on('mouseup', self.end);
+					win.on('mousemove', move);
+					win.on('mouseup', end);
 				}
 
 				return false;
-			};
-			self.move = function(evt){
+			}
+			function move(evt){
 				var ni, touch;
 				evt.preventDefault();
 				if(!lib.istouch){
@@ -82,107 +85,99 @@
 				} else {
 					for(ni = 0; ni < evt.touches.length; ni++){
 						touch = evt.touches[ni];
-						if(!self.touches[touch.identifier]){
+						if(!touches[touch.identifier]){
 							continue;
 						}
-						self.touches[touch.identifier] = touch;
-						self.evts[touch.identifier] = touch;
+						touches[touch.identifier] = touch;
+						evts[touch.identifier] = touch;
 					}
 				}
 
-				if(self.throttle){
+				if(throttle){
 					return;
 				}
 
 				var t = function(){
 					var no;
-					for(no in self.touches){
-						if(!self.evts[no]){
+					for(no in touches){
+						if(!evts[no]){
 							continue;
 						}
-						if(lib.type(self.options.move,'function')){
-							self.options.move({
-								id: no,
-								target: lib.dom(self.evts[no].target),
-								pageX: self.evts[no].pageX,
-								pageY: self.evts[no].pageY
-							});
+						touches[no].has_moved = true;
+						if(lib.type(self.move,'function')){
+							self.move(makeEvt(evts[no]));
 						}
 					}
-					self.evts = {};
+					evts = {};
 				};
 
-				self.throttle = setInterval(t,50);
+				throttle = setInterval(t,50);
 				t();
 			};
-			self.end = function(evt){
+			function end(evt){
 				var win = lib.dom(window),
 					touch, ni;
 				if(!lib.istouch){
-					if(lib.type(self.options.end,'function')){
-						self.options.end({
-							id: 0,
-							target: evt.target,
-							pageX: evt.pageX,
-							pageY: evt.pageY
-						});
+					if(lib.type(self.click,'function') && !touches[0].has_moved){
+						self.click(makeEvt(evt));
 					}
-					delete self.touches[0];
+					if(lib.type(self.end,'function')){
+						self.end(makeEvt(evt));
+					}
+					delete touches[0];
 				} else {
 					for(ni = 0; ni < evt.changedTouches.length; ni++){
 						touch = evt.changedTouches[ni];
-						if(!self.touches[touch.identifier]){
+						if(!touches[touch.identifier]){
 							return;
 						}
-						if(lib.type(self.options.end,'function')){
-							self.options.end({
-								id: touch.identifier,
-								target: lib.dom(touch.target),
-								pageX: evt.pageX,
-								pageY: evt.pageY
-							});
+						if(lib.type(self.end,'function')){
+							self.end(makeEvt(touch));
 						}
-						delete self.touches[touch.identifier];
+						delete touches[touch.identifier];
 					}
 				}
 
-				if(Object.keys(self.touches).length){
+				if(Object.keys(touches).length){
 					return;
 				}
 
 				if(lib.istouch){
-					win.off('touchmove', self.move);
-					win.off('touchend', self.end);
-					win.off('touchcancel', self.end);
+					win.off('touchmove', move);
+					win.off('touchend', end);
+					win.off('touchcancel', end);
 				} else {
-					win.off('mousemove', self.move);
-					win.off('mouseup', self.end);
+					win.off('mousemove', move);
+					win.off('mouseup', end);
 				}
 
-				self.touches = {};
-				self.evts = {};
-				if(self.throttle){
-					clearInterval(self.throttle);
-					self.throttle = null;
+				touches = {};
+				evts = {};
+				if(throttle){
+					clearInterval(throttle);
+					throttle = null;
 				}
 			};
+
 			self.remove = function(){
-				var win = lib.dom(window);
 				if(!lib.istouch){
-					self.options.element.off('mousedown', self.start);
-					win.off('mousemove', this.move);
-					win.off('mouseup', this.end);
+					self.element.off('mousedown', start);
+					win.off('mousemove', move);
+					win.off('mouseup', end);
 					return;
 				}
 
-				self.options.element.off('touchstart', self.start);
+				self.element.off('touchstart', start);
 
-				win.off('touchmove', this.move);
-				win.off('touchend', this.end);
-				win.off('touchcancel', this.end);
+				win.off('touchmove', move);
+				win.off('touchend', end);
+				win.off('touchcancel', end);
 			};
 
-			self.options.element.on(lib.istouch?'touchstart':'mousedown', self.start);
+			lib.init(function(){
+				lib.dom(self.element).on(lib.istouch?'touchstart':'mousedown', start);
+			});
+
 			return self;
 		}
 	});

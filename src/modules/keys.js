@@ -7,13 +7,13 @@
 //		in any permutation you require
 //		caps lock konami code:
 //			[shift][up + up + down + down + left + right + left + right + b + a + enter]
-;(function(factory){
+;(function(global,factory){
 	if(typeof define === 'function' && define.amd) {
-		define(['../dd'], factory);
+		define(['../dd'], function(lib){ return factory(global,lib); });
 	} else {
-		factory($dd);
+		factory(global,$dd);
 	}
-})(function(lib){
+})(typeof window !== "undefined" ? window : this, function(global, lib){
 	var keyStatus = {},
 		keyMap = {},
 		add = function(evt){
@@ -138,12 +138,12 @@
 		};
 
 	lib.init(function(){
-		if(window.addEventListener){
-			window.addEventListener('keydown',add, false);
-			window.addEventListener('keyup',remove, false);
+		if(global.addEventListener){
+			global.addEventListener('keydown',add, false);
+			global.addEventListener('keyup',remove, false);
 		} else {
-			window.attachEvent('keydown',add);
-			window.attachEvent('keyup',remove);
+			global.attachEvent('keydown',add);
+			global.attachEvent('keyup',remove);
 		}
 	});
 

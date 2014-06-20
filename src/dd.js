@@ -87,11 +87,9 @@
 			}
 			clearInterval(t);
 			t = null;
-			setTimeout(function(){
-				for(ni = 0; ni < c.length; ni++){
-					c[ni]();
-				}
-			},200);
+			for(ni = 0; ni < c.length; ni++){
+				c[ni]();
+			}
 		},10);
 		var ret = function(_f){
 			if(!t){
