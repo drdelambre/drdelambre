@@ -5,7 +5,7 @@
 //		but admit i haven't thought the interface all the way through.
 ;(function(factory){
 	if(typeof define === 'function' && define.amd) {
-		define(['../dd'], factory);
+		define(['../dd','../polyfill/keys'], factory);
 	} else {
 		factory($dd);
 	}
@@ -215,7 +215,7 @@
 		var self = {
 			_pre: [],
 			_post: [],
-			errors: [],
+			errors: {},
 			def: {}
 		};
 
@@ -341,15 +341,17 @@
 					v = self.def[ni].validation||[];
 					for(no = 0; no < v.length; no++){
 						e = v[no](_cleanRead(self,ni));
-						if(!lib.type(e,'array')){
+						if(!lib.type(e,'array') || !e.length){
 							continue;
 						}
-						self.errors = self.errors.concat(e);
+						self.errors[ni] = e;
 					}
 				}
-				if(!self.errors.length){
+
+				if(!Object.keys(self.errors).length){
 					return true;
 				}
+
 				return false;
 			}
 
