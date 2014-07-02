@@ -1,5 +1,11 @@
 // Object.keys polyfill
-;(function(){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define([], factory);
+	} else {
+		factory();
+	}
+})(function(){
 	Object.keys = Object.keys||(function(){
 		'use strict';
 		var hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -38,4 +44,4 @@
 			return result;
 		};
 	}());
-})();
+});

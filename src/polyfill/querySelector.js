@@ -1,5 +1,11 @@
 // polyfill for using querySelectorAll in old doms
-define([],function(){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define([], factory);
+	} else {
+		factory();
+	}
+})(function(){
 	document.querySelectorAll = document.querySelectorAll||function(selector){
 		var doc = document,
 			head = doc.documentElement.firstChild,

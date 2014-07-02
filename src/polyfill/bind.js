@@ -1,11 +1,16 @@
 // bind polyfill for setting function scope
-define([],function(){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define([], factory);
+	} else {
+		factory();
+	}
+})(function(){
 	if(Function.prototype.bind){
 		return;
 	}
 	Function.prototype.bind = function(oThis){		// jshint ignore:line
-		if(typeof this !== "function") {
-			// closest thing possible to the ECMAScript 5 internal IsCallable function
+		if(typeof this !== "function"){
 			throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
 		}
 
@@ -16,10 +21,10 @@ define([],function(){
 				return fToBind.apply(this instanceof fNOP && oThis?this:oThis,
 							aArgs.concat(Array.prototype.slice.call(arguments)));
 			};
-	
+
 		fNOP.prototype = this.prototype;
 		fBound.prototype = new fNOP();
-	
+
 		return fBound;
 	};
 });

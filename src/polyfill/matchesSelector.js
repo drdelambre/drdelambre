@@ -1,5 +1,11 @@
 // polyfill for using matchesSelector in old doms
-define([],function(){
+;(function(factory){
+	if(typeof define === 'function' && define.amd) {
+		define([], factory);
+	} else {
+		factory();
+	}
+})(function(){
 	Element.prototype.matchesSelector = Element.prototype.webkitMatchesSelector ||
 		Element.prototype.mozMatchesSelector ||
 		function(selector){
