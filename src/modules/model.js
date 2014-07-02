@@ -1,8 +1,7 @@
 // $dd.model
 //		teh bones of any awesome web app. replaces the $dd.object paradigm
 //		to reduce scope bugs and allow easier state migration through simple
-//		objects. I've used the watch interface pretty extensively with knockout,
-//		but admit i haven't thought the interface all the way through.
+//		objects.
 ;(function(factory){
 	if(typeof define === 'function' && define.amd) {
 		define(['../dd','../polyfill/keys'], factory);
@@ -11,14 +10,7 @@
 	}
 })(function(lib){
 	// stuff to exclude from the serialization
-	// and an interface for connecting watchables
-	var blacklist = /^(_.*|def|on_fill|on_out|fill|out|extend|attach|map|type|watch|errors|validate)$/,
-		watchInterface = {
-			observe: function(val){ return val; },
-			unwrap: function(val){ return val; },
-			read: function(vari){ return vari; },
-			write: function(vari,val){ vari = val; }
-		};
+	var blacklist = /^(_.*|def|on_fill|on_out|fill|out|extend|attach|map|type|errors|validate)$/;
 
 	// lets only add clean data to our models
 	function _cleanNumbers(obj){
@@ -54,22 +46,6 @@
 		return obj;
 	}
 
-	// something needed to normalize knockout stuff
-	function _cleanRead(model,key){
-		if(model.def[key].watch){
-			return watchInterface.read(model[key]);
-		}
-		return model[key];
-	}
-	// something needed to normalize knockout stuff
-	function _cleanWrite(model,key,val){
-		if(model.def[key].watch){
-			watchInterface.write(model[key],val);
-		} else {
-			model[key] = val;
-		}
-	}
-
 	// does the heavy lifting for importing an object into a model
 	function _sin(model,data){
 		var ni, na, no, a;
@@ -96,19 +72,19 @@
 
 			a = null;
 			if(!model.def[ni].type){
-				_cleanWrite(model,ni,_cleanNumbers(data[na]));
+				model[ni] = _cleanNumbers(data[na]);
 				continue;
 			}
 			if(!lib.type(model.def[ni]['default'], 'array')){
 				if(model.def[ni].type === Date){
 					if(lib.type(data[na],'date')){
-						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na].valueOf())));
+						model[ni] = new model.def[ni].type(new Date(data[na].valueOf()));
 					} else if(lib.type(data[na],'string') && !isNaN(Date.parse(data[na]))){
-						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na])));
+						model[ni] = new model.def[ni].type(new Date(data[na]));
 					}
 					continue;
 				}
-				_cleanWrite(model,ni, new model.def[ni].type(data[na]));
+				model[ni] = new model.def[ni].type(data[na]);
 				continue;
 			}
 
@@ -117,16 +93,16 @@
 			for(no = 0; no < data[na].length; no++){
 				if(model.def[ni].type === Date){
 					if(lib.type(data[na][no],'date')){
-						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na][no].valueOf())));
+						model[ni] = new model.def[ni].type(new Date(data[na][no].valueOf()));
 					} else if(lib.type(data[na][no],'string') && !isNaN(Date.parse(data[na][no]))){
-						_cleanWrite(model,ni, new model.def[ni].type(new Date(data[na][no])));
+						model[ni] = new model.def[ni].type(new Date(data[na][no]));
 					}
 					continue;
 				}
 				a.push(new model.def[ni].type(data[na][no]));
 			}
 
-			_cleanWrite(model,ni,a);
+			model[ni] = a;
 		}
 
 		for(ni = 0; ni < model._pre.length; ni++){
@@ -141,8 +117,7 @@
 	// does the same as _sin, but for exporting
 	function _sout(model){
 		var obj = {},
-			uwrap = watchInterface.unwrap,
-			tmp, ni, na, no, a;
+			ni, na, no;
 
 		for(ni = 0; ni < model._post.length; ni++){
 			if(model._post[ni].fire_before){
@@ -155,49 +130,45 @@
 				continue;
 			}
 
-			tmp = uwrap(model[ni]);
-
 			na = model.def[ni].external[0]||ni;
 
 			//gotta look for models WITHIN models
-			if(!tmp){
-				obj[na] = tmp;
-			} else if(tmp.hasOwnProperty('out')){
-				obj[na] = tmp.out();
-			} else if(lib.type(tmp,'array')){
+			if(!model[ni]){
+				obj[na] = model[ni];
+			} else if(model[ni].hasOwnProperty('out')){
+				obj[na] = model[ni].out();
+			} else if(lib.type(model[ni],'array')){
 				obj[na] = [];
-				for(no = 0; no < tmp.length; no++){
-					a = uwrap(tmp[no]);
-					if(lib.type(a,'function')){
+				for(no = 0; no < model[ni].length; no++){
+					if(lib.type(model[ni][no],'function')){
 						continue;
 					}
-					if(lib.type(a,'date')){
-						a = a.toISOString();
+					if(lib.type(model[ni][no],'date')){
+						model[ni][no] = model[ni][no].toISOString();
 					}
-					if(lib.type(a,'object') && a.hasOwnProperty('out')){
-						a = a.out();
+					if(lib.type(model[ni][no],'object') && model[ni][no].hasOwnProperty('out')){
+						model[ni][no] = model[ni][no].out();
 					}
-					obj[na].push(a);
+					obj[na].push(model[ni][no]);
 				}
-			} else if(lib.type(tmp,'date')){
-				obj[na] = tmp.toISOString();
-			} else if(lib.type(tmp,'object')){
+			} else if(lib.type(model[ni],'date')){
+				obj[na] = model[ni].toISOString();
+			} else if(lib.type(model[ni],'object')){
 				obj[na] = {};
-				for(no in tmp){
-					a = uwrap(tmp[no]);
-					if(lib.type(a,'function')){
+				for(no in model[ni]){
+					if(lib.type(model[ni][no],'function')){
 						continue;
 					}
-					if(lib.type(a,'object') && a.hasOwnProperty('out')){
-						a = a.out();
+					if(lib.type(model[ni][no],'object') && model[ni][no].hasOwnProperty('out')){
+						model[ni][no] = model[ni][no].out();
 					}
-					obj[na][no] = a;
+					obj[na][no] = model[ni][no];
 				}
 			} else {
-				if(lib.type(tmp,'function')){
+				if(lib.type(model[ni],'function')){
 					continue;
 				}
-				obj[na] = tmp;
+				obj[na] = model[ni];
 			}
 		}
 
@@ -228,7 +199,7 @@
 		};
 		self.clear = function(){
 			for(var ni in self.def){
-				_cleanWrite(self,ni,self.def[ni]['default']);
+				self[ni] = self.def[ni]['default'];
 			}
 			return self;
 		};
@@ -245,7 +216,6 @@
 
 				self.def[ni] = {
 					'default':lib.clone(_def[ni]),
-					watch: false,
 					type: null,
 					external: [],
 					validation: []
@@ -306,33 +276,13 @@
 			});
 			return self;
 		};
-		self.watch = function(_map){
-			var ni;
-			//make all the things observable!
-			if(!arguments.length){
-				_map = {};
-				for(ni in self.def){
-					_map[ni] = true;
-				}
-			}
-			// this bad boy controls which properties are observable
-			for(ni in _map){
-				if(!self.def.hasOwnProperty(ni)){
-					continue;
-				}
-				if(_map[ni] === self.def[ni].watch){
-					continue;
-				}
-				self.def[ni].watch = _map[ni];
-				if(_map[ni]){
-					self[ni] = watchInterface.observe(self[ni]);
-				} else {
-					self[ni] = watchInterface.unwrap(self[ni]);
-				}
-			}
-			return self;
-		};
 		self.validate = function(_map){
+			// if called with the _map argument, this function attaches
+			// validation functions to the model fields denoted by the _map
+			// object's key. if no _map is sent, this function calls upon
+			// those mapped functions, and if any of them return an error,
+			// connects it to self.errors and returns false. if everything is
+			// gravy, the function returns true.
 			var ni,no,v,e;
 			if(!arguments.length){
 				self.errors = [];
@@ -340,7 +290,7 @@
 				for(ni in self.def){
 					v = self.def[ni].validation||[];
 					for(no = 0; no < v.length; no++){
-						e = v[no](_cleanRead(self,ni));
+						e = v[no](self[ni]);
 						if(!lib.type(e,'array') || !e.length){
 							continue;
 						}
@@ -356,7 +306,13 @@
 			}
 
 			for(ni in _map){
-				self.def[ni].validation.push(_map[ni]);
+				if(!self.def.hasOwnProperty(ni)){
+					continue;
+				}
+				if(!lib.type(_map[ni],'array')){
+					_map[ni] = [ _map[ni] ];
+				}
+				self.def[ni].validation = self.def[ni].validation.concat(_map[ni]);
 			}
 
 			return self;
@@ -364,10 +320,6 @@
 
 		//initialization
 		return self.extend(def);
-	};
-	ret.watchInterface = function(_interface){
-		watchInterface = _interface;
-		return ret;
 	};
 
 	lib.mixin({
