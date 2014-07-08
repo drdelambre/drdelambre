@@ -3,7 +3,12 @@
 //		and is getting fatter all the time. So make it better.
 ;(function(factory){
 	if(typeof define === 'function' && define.amd) {
-		define(['../dd','../polyfill/querySelector','../polyfill/matchesSelector'], factory);
+		define([
+			'../dd',
+			'../polyfill/querySelector',
+			'../polyfill/matchesSelector',
+			'../polyfill/animationFrame'
+		], factory);
 	} else {
 		factory($dd);
 	}
@@ -65,6 +70,7 @@
 						dom[ni].style[no.replace(/-(\w)/g,cssCap)] = obj[no];
 					}
 				}
+
 				return dom;
 			},
 			addClass: function(dom,selector){
@@ -416,6 +422,17 @@
 				for(ni = 0; ni < dom._len; ni++){
 					for(no = 0; no < elem._len; no++){
 						dom[ni].appendChild(elem[no]);
+					}
+				}
+				return dom;
+			},
+			prepend: function(dom,elem){
+				var ni,no,a;
+				elem = lib.dom(elem);
+				for(ni = 0; ni < dom._len; ni++){
+					a = dom[ni].firstChild;
+					for(no = 0; no < elem._len; no++){
+						dom[ni].insertBefore(elem[no],a);
 					}
 				}
 				return dom;

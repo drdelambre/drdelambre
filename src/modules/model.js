@@ -46,6 +46,55 @@
 		return obj;
 	}
 
+	function _makeArray(model,index){
+		var a = [];
+		a.push = function(){
+			var args = Array.prototype.slice.call(arguments,0),
+				ni;
+
+			if(model.def[index].type !== null){
+				for(ni = 0; ni < args.length; ni++){
+					if(args[ni].hasOwnProperty('out') && lib.type(args[ni].out,'function')){
+						args[ni] = args[ni].out();
+					}
+					args[ni] = model.def[index].type(args[ni]);
+				}
+			}
+
+			Array.prototype.push.apply(a,args);
+		};
+		a.unshift = function(){
+			var args = Array.prototype.slice.call(arguments,0),
+				ni;
+			if(model.def[index].type !== null){
+				for(ni = 0; ni < args.length; ni++){
+					if(args[ni].hasOwnProperty('out') && lib.type(args[ni].out,'function')){
+						args[ni] = args[ni].out();
+					}
+					args[ni] = model.def[index].type(args[ni]);
+				}
+			}
+
+			Array.prototype.unshift.apply(a,args);
+		};
+		a.splice = function(){
+			var args = Array.prototype.slice.call(arguments,0),
+				ni;
+			if(model.def[index].type !== null && args.length > 2){
+				for(ni = 2; ni < args.length; ni++){
+					if(args[ni].hasOwnProperty('out') && lib.type(args[ni].out,'function')){
+						args[ni] = args[ni].out();
+					}
+					args[ni] = model.def[index].type(args[ni]);
+				}
+			}
+
+			Array.prototype.unshift.apply(a,args);
+		};
+
+		return a;
+	}
+
 	// does the heavy lifting for importing an object into a model
 	function _sin(model,data){
 		var ni, na, no, a;
@@ -221,7 +270,12 @@
 					validation: []
 				};
 
-				self[ni] = _def[ni];
+				if(lib.type(_def[ni], 'array')){
+					self[ni] = _makeArray(self,ni);
+				} else {
+					self[ni] = _def[ni];
+				}
+
 			}
 
 			return self;
