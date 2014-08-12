@@ -81,7 +81,7 @@
 				var ni, touch;
 				evt.preventDefault();
 				if(!lib.istouch){
-					self.evts = { 0:evt };
+					evts = { 0:evt };
 				} else {
 					for(ni = 0; ni < evt.touches.length; ni++){
 						touch = evt.touches[ni];
