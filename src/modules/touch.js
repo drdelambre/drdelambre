@@ -51,7 +51,6 @@
 						if(!lib.type(self.start,'function')){
 							continue;
 						}
-
 						self.start(makeEvt(touch));
 					}
 				} else {
@@ -64,7 +63,7 @@
 				}
 
 
-				if(Object.keys(touches).length === 0 && lib.istouch){
+				if(Object.keys(touches).length === 1 && lib.istouch){
 					win.on('touchmove', move);
 					win.on('touchend', end);
 					win.on('touchcancel', end);
