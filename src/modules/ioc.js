@@ -23,12 +23,13 @@
 
 			ret.get = function(lookup){
 				if(!hash.hasOwnProperty(lookup)){
-					throw new Error('$dd.di: nothing hooked up to ' + lookup);
+					throw new Error('$dd.ioc: nothing hooked up to ' + lookup);
 				}
-				if(!hash[lookup].i){
-					hash[lookup].i = new hash[lookup].c();
-				}
-				return hash[lookup].i;
+				//lazy loading method seems to be broken for now
+//				if(!hash[lookup].i){
+//					hash[lookup].i = hash[lookup].c();
+//				}
+				return hash[lookup].c();
 			};
 
 			return ret;
