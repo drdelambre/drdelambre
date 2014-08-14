@@ -24,6 +24,13 @@
 					end: null,
 					click: null
 				},options);
+			if(!options.hasOwnProperty('exclude')){
+				options.exclude = [];
+			}
+			if(!lib.type(options.exclude,'array')){
+				options.exclude = [ options.exclude ];
+			}
+			self.exclude = options.exclude;
 
 			function makeEvt(evt){
 				return {
@@ -35,17 +42,34 @@
 			}
 
 			function start(evt){
-				evt.preventDefault();
-				var ni, touch;
+				var ignoreAll, ignore,
+					tar, ni, no, touch;
+
 				if(lib.istouch){
+					ignoreAll = true;
 					for(ni = 0; ni < evt.changedTouches.length; ni++){
+						ignore = false;
 						touch = evt.changedTouches[ni];
 						touch.has_moved = false;
+
+						tar = lib.dom(touch.target);
+						for(no = 0; no < self.exclude.length; no++){
+							if(tar.closest(self.exclude[no])._len){
+								ignore = true;
+								break;
+							}
+						}
+
+						if(ignore){
+							continue;
+						}
 
 						//this should never happen
 						if(touches[touch.identifier]){
 							return;
 						}
+
+						ignoreAll = false;
 
 						touches[touch.identifier] = touch;
 						if(!lib.type(self.start,'function')){
@@ -54,7 +78,24 @@
 
 						self.start(makeEvt(touch));
 					}
+
+					if(!ignoreAll){
+						evt.preventDefault();
+					}
 				} else {
+					ignore = false;
+					tar = lib.dom(evt.target);
+					for(ni = 0; ni < self.exclude.length; ni++){
+						if(tar.closest(self.exclude[ni])._len){
+							ignore = true;
+							break;
+						}
+					}
+					if(ignore){
+						return;
+					}
+
+					evt.preventDefault();
 					touches[0] = evt;
 					evt.has_moved = false;
 
@@ -81,7 +122,7 @@
 				var ni, touch;
 				evt.preventDefault();
 				if(!lib.istouch){
-					self.evts = { 0:evt };
+					evts = { 0:evt };
 				} else {
 					for(ni = 0; ni < evt.touches.length; ni++){
 						touch = evt.touches[ni];

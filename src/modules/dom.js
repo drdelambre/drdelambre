@@ -397,7 +397,11 @@
 					width: box.right - box.left,
 					height: box.bottom - box.top,
 					innerWidth: box.right - box.left - (b_left + b_right + p_left + p_right),
-					innerHeight: box.bottom - box.top - (b_top + b_bottom + p_top + p_bottom)
+					innerHeight: box.bottom - box.top - (b_top + b_bottom + p_top + p_bottom),
+					scrollWidth: dom[0].scrollWidth,
+					scrollHeight: dom[0].scrollHeight,
+					scrollLeft: dom[0].scrollLeft,
+					scrollTop: dom[0].scrollTop
 				};
 			},
 			get: function(dom,index){
