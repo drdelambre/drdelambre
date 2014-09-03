@@ -225,10 +225,6 @@
 		return _xhr;
 	}
 
-	var self = {
-		base:
-	};
-
 	self.raw = function(url,data,callback,method){
 		return ajax({
 			method: method||'GET',
