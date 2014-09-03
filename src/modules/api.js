@@ -157,7 +157,7 @@
 
 		if(!parts.length){
 			parts = origin.slice(0);
-			options.url = parts[0] + (origin.url[0]=='/'?'':'/') + origin.url;
+			options.url = parts[0] + (options.url[0]=='/'?'':'/') + options.url;
 		}
 		if(parts.length < 3){
 			throw new Error('$dd.api: invalid url supplied to xhr');
