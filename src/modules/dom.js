@@ -461,6 +461,46 @@
 							routes: []
 						};
 						s.fun = function(_e){
+							/*
+							if(s.evt === 'scroll'){
+								var delta = 0,
+									deltaX = 0,
+									deltaY = 0,
+									absDelta = 0;
+								if('detail'      in _e ){
+									deltaY = _e.detail * -1;
+								}
+								if('wheelDelta'  in _e ){
+									deltaY = _e.wheelDelta;
+								}
+								if('wheelDeltaY' in _e ){
+									deltaY = _e.wheelDeltaY;
+								}
+								if('wheelDeltaX' in _e ){
+									deltaX = _e.wheelDeltaX * -1;
+								}
+								if('axis' in _e && _e.axis === _e.HORIZONTAL_AXIS){
+									deltaX = deltaY * -1;
+									deltaY = 0;
+								}
+
+								delta = deltaY === 0 ? deltaX : deltaY;
+
+								if('deltaY' in _e){
+									deltaY = _e.deltaY * -1;
+									delta = deltaY;
+								}
+								if('deltaX' in _e){
+									deltaX = _e.deltaX;
+
+									if(deltaY === 0){
+										delta = deltaX * -1;
+									}
+								}
+								_e.deltaX = deltaX;
+								_e.deltaY = deltaY;
+							}
+							*/
 							var t = lib.dom(_e.target),
 								ni,na;
 							for(ni = 0; ni < s.routes.length; ni++){

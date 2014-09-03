@@ -153,9 +153,13 @@
 
 		origin = /^([\w.+-]+:)(?:\/\/([^\/?#:]*)(?::(\d+)|)|)/.exec(origin.toLowerCase());
 		options.url = (( options.url ) + "").replace(/#.*$/, "").replace(/^\/\//, origin[1] + "//");
-		parts  = /^([\w.+-]+:)(?:\/\/([^\/?#:]*)(?::(\d+)|)|)/.exec(options.url.toLowerCase());
+		parts  = /^([\w.+-]+:)(?:\/\/([^\/?#:]*)(?::(\d+)|)|)/.exec(options.url.toLowerCase())||[];
 
-		if(!parts.length || parts.length < 3){
+		if(!parts.length){
+			parts = origin.slice(0);
+			options.url = parts[0] + (origin.url[0]=='/'?'':'/') + origin.url;
+		}
+		if(parts.length < 3){
 			throw new Error('$dd.api: invalid url supplied to xhr');
 		}
 
@@ -221,7 +225,9 @@
 		return _xhr;
 	}
 
-	var self = {};
+	var self = {
+		base:
+	};
 
 	self.raw = function(url,data,callback,method){
 		return ajax({

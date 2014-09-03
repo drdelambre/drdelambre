@@ -24,7 +24,7 @@
 		if(type === 'string'){
 			if(!obj || obj === 'null'){
 				obj = null;
-			} else if(!isNaN(parseFloat(obj)) && isFinite(obj)){
+			} else if(!isNaN(parseFloat(obj)) && isFinite(parseFloat(obj))){
 				return parseFloat(obj);
 			}
 
@@ -166,11 +166,11 @@
 	// does the same as _sin, but for exporting
 	function _sout(model){
 		var obj = {},
-			ni, na, no;
+			ni, na, no, a;
 
 		for(ni = 0; ni < model._post.length; ni++){
 			if(model._post[ni].fire_before){
-				model._post[ni](obj);
+				model._post[ni].fun(obj);
 			}
 		}
 
@@ -192,13 +192,14 @@
 					if(lib.type(model[ni][no],'function')){
 						continue;
 					}
+					a = model[ni][no];
 					if(lib.type(model[ni][no],'date')){
-						model[ni][no] = model[ni][no].toISOString();
+						a = a.toISOString();
 					}
-					if(lib.type(model[ni][no],'object') && model[ni][no].hasOwnProperty('out')){
-						model[ni][no] = model[ni][no].out();
+					if(lib.type(a,'object') && a.hasOwnProperty('out')){
+						a = a.out();
 					}
-					obj[na].push(model[ni][no]);
+					obj[na].push(a);
 				}
 			} else if(lib.type(model[ni],'date')){
 				obj[na] = model[ni].toISOString();
@@ -208,10 +209,11 @@
 					if(lib.type(model[ni][no],'function')){
 						continue;
 					}
-					if(lib.type(model[ni][no],'object') && model[ni][no].hasOwnProperty('out')){
-						model[ni][no] = model[ni][no].out();
+					a = model[ni][no];
+					if(lib.type(a,'object') && a.hasOwnProperty('out')){
+						a = a.out();
 					}
-					obj[na][no] = model[ni][no];
+					obj[na][no] = a;
 				}
 			} else {
 				if(lib.type(model[ni],'function')){
@@ -223,7 +225,7 @@
 
 		for(ni = 0; ni < model._post.length; ni++){
 			if(!model._post[ni].fire_before){
-				model._post[ni](obj);
+				model._post[ni].fun(obj);
 			}
 		}
 
