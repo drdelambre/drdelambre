@@ -9,8 +9,7 @@
 		factory($dd);
 	}
 })(function(lib){
-	var reg = {},
-		cache = {};
+	var cache = {};
 
 	function generate_topic(topic){
 		var ret = {
@@ -51,14 +50,6 @@
 	}
 
 	lib.mixin({
-		channel: function(topic,description){
-			if(reg.hasOwnProperty(topic)){
-				return;
-			}
-			var descriptor = generate_topic(topic);
-			reg[topic] = description;
-			cache[descriptor.path] = descriptor;
-		},
 		pub : function(){
 			var topic = arguments[0],
 				args = Array.prototype.slice.call(arguments, 1)||[],
@@ -76,15 +67,11 @@
 					cache[t].subs[ni].apply(lib, path_args);
 				}
 			}
-			if(!found){
-				console.log('$dd.pub: Unregistered channel ' + topic);
-			}
 		},
 		sub : function(topic, callback){
 			topic = generate_topic(topic);
 			if(!cache.hasOwnProperty(topic.path)){
-				console.log('$dd.sub: Unregistered channel ' + topic);
-				return;
+				cache[topic.path] = topic;
 			}
 			cache[topic.path].subs.push(callback);
 			return [topic.path, callback];
@@ -98,14 +85,13 @@
 			}
 		},
 		channels : function(){
-			var out = '\n',
+			var out = [],
 				ni;
 
-			for(ni in reg){
-				out += '\nChannel:     ' + ni +
-					   '\nDescription: ' + reg[ni] + '\n';
+			for(ni in cache){
+				out.push(cache[ni].topic);
 			}
-			console.log(out);
+			console.log('Subscribed Channels:\n\t' + out.sort().join('\n\t'));
 		}
 	});
 });
