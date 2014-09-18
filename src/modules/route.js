@@ -58,44 +58,50 @@
 
 	lib.init(function(){ handleChange(); });
 
-	lib.mixin({
-		route: function(path,open,close){
-			var keys = [];
+	var ret  = function(path,open,close){
+		var keys = [];
 
-			if($dd.type(path,'array')){
-				path = '(' + path.join('|') + ')';
-			}
-
-			path = path
-				.replace(/\/\(/g, '(?:/')
-				.replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, function(_, slash, format, key, capture, optional){ // jshint ignore:line
-					keys.push({ name: key, optional: !! optional });
-					slash = slash || '';
-					return '' +
-						(optional ? '' : slash) +
-						'(?:' +
-						(optional ? slash : '') +
-						(format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')' +
-						(optional || '');
-					})
-				.replace(/([\/.])/g, '\\$1')
-				.replace(/\*/g, '(.*)');
-			path = '^' + path + '$';
-
-			if(!paths[path]){
-				paths[path] = {
-					regexp: new RegExp(path),
-					keys: keys,
-					before: [],
-					after: []
-				};
-			}
-			if(typeof open === 'function'){
-				paths[path].before.push(open);
-			}
-			if(typeof close === 'function'){
-				paths[path].after.push(close);
-			}
+		if($dd.type(path,'array')){
+			path = '(' + path.join('|') + ')';
 		}
+
+		path = path
+			.replace(/\/\(/g, '(?:/')
+			.replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, function(_, slash, format, key, capture, optional){ // jshint ignore:line
+				keys.push({ name: key, optional: !! optional });
+				slash = slash || '';
+				return '' +
+					(optional ? '' : slash) +
+					'(?:' +
+					(optional ? slash : '') +
+					(format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')' +
+					(optional || '');
+				})
+			.replace(/([\/.])/g, '\\$1')
+			.replace(/\*/g, '(.*)');
+		path = '^' + path + '$';
+
+		if(!paths[path]){
+			paths[path] = {
+				regexp: new RegExp(path),
+				keys: keys,
+				before: [],
+				after: []
+			};
+		}
+		if(typeof open === 'function'){
+			paths[path].before.push(open);
+		}
+		if(typeof close === 'function'){
+			paths[path].after.push(close);
+		}
+	};
+
+	ret.goto = function(hash){
+		window.location.hash = '#/' + hash;
+	};
+
+	lib.mixin({
+		route: ret
 	});
 });
