@@ -28,17 +28,17 @@
 		var hash = window.location.hash.replace(/^#!?\//,''),
 			ni,no,args;
 
-		for(ni in paths){
-			if(!paths[ni].regexp.test(hash) || ni === '' && hash.length || hash === current){
-				continue;
-			}
-
-			if(paths[current]){
-				for(no = 0; no < paths[current].after.length; no++){
-					if(typeof paths[current].after[no] === 'function'){
-						paths[current].after[no]();
-					}
+		if(current && paths[current] && !paths[current].regexp.test(hash)){
+			for(no = 0; no < paths[current].after.length; no++){
+				if(typeof paths[current].after[no] === 'function'){
+					paths[current].after[no]();
 				}
+			}
+		}
+
+		for(ni in paths){
+			if(!paths[ni].regexp.test(hash) || hash === current){
+				continue;
 			}
 
 			args = paths[ni].regexp.exec(hash).splice(1);
