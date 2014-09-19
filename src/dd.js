@@ -17,7 +17,9 @@
 ;(function(global,factory){
 	if(typeof define === 'function' && define.amd) {
 		define([], function(){ return factory(global); });
-	} else {
+	} else if (typeof exports === 'object') {
+        module.exports = factory(global);
+    } else {
 		factory(global);
 	}
 })(typeof window !== "undefined" ? window : this, function(global){
@@ -79,29 +81,31 @@
 	// $dd.init:
 	//		Stores up function calls until the document.ready
 	//		then blasts them all out
-	self.init = (function(){
-		var c = [], t, ni;
-		t = setInterval(function(){
-			if(!document.body){
-				return;
-			}
-			clearInterval(t);
-			t = null;
-			for(ni = 0; ni < c.length; ni++){
-				c[ni]();
-			}
-		},10);
-		var ret = function(_f){
-			if(!t){
-				_f();
-			} else {
-				c.push(_f);
-			}
-		};
+	if(typeof document !== "undefined"){
+		self.init = (function(){
+			var c = [], t, ni;
+			t = setInterval(function(){
+				if(!document.body){
+					return;
+				}
+				clearInterval(t);
+				t = null;
+				for(ni = 0; ni < c.length; ni++){
+					c[ni]();
+				}
+			},10);
+			var ret = function(_f){
+				if(!t){
+					_f();
+				} else {
+					c.push(_f);
+				}
+			};
 
-		ret.queue = c;
-		return ret;
-	})();
+			ret.queue = c;
+			return ret;
+		})();
+	}
 
 	// $dd.extend:
 	//		throw a bunch of objects in and it smashes
