@@ -5,6 +5,8 @@
 ;(function(factory){
 	if(typeof define === 'function' && define.amd) {
 		define(['../dd','../polyfill/keys'], factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require('../dd'));
 	} else {
 		factory($dd);
 	}

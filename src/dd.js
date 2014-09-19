@@ -18,7 +18,7 @@
 	if(typeof define === 'function' && define.amd) {
 		define([], function(){ return factory(global); });
 	} else if (typeof exports === 'object') {
-        module.exports = factory(global);
+		module.exports = factory(global);
     } else {
 		factory(global);
 	}
