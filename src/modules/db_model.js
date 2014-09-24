@@ -68,7 +68,7 @@
 				}
 			};
 
-			self.find = function(filters,callback){
+			self.find = function(filters,modifiers,callback){
 				if(!self.collection){
 					throw new Error('$dd.db_model: no collection set for find');
 				}
@@ -77,7 +77,7 @@
 					return;
 				}
 
-				self.collection.find(filters,function(err,items){
+				self.collection.find(filters,modifiers).toArray(function(err,items){
 					if(err){
 						console.log("Error Searching! ",filters,err);
 						callback([]);
@@ -88,14 +88,7 @@
 						return;
 					}
 
-					//convert results to records
-					var r = [],
-						ne;
-					for(ne = 0; ne < items.length; ne++){
-						r.push(self(items[ne]));
-					}
-
-					callback(r);
+					callback(items);
 				});
 			};
 
