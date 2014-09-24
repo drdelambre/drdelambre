@@ -9,6 +9,11 @@
 			'../polyfill/matchesSelector',
 			'../polyfill/animationFrame'
 		], factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require('../dd'));
+		require('../polyfill/querySelector');
+		require('../polyfill/matchesSelector');
+		require('../polyfill/animationFrame');
 	} else {
 		factory($dd);
 	}
