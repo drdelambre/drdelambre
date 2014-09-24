@@ -17,6 +17,8 @@
 ;(function(factory){
 	if(typeof define === 'function' && define.amd) {
 		define(['../dd'], factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require('../dd'));
 	} else {
 		factory($dd);
 	}
@@ -61,7 +63,7 @@
 	var ret  = function(path,open,close){
 		var keys = [];
 
-		if($dd.type(path,'array')){
+		if(lib.type(path,'array')){
 			path = '(' + path.join('|') + ')';
 		}
 
