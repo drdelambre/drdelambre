@@ -1,5 +1,5 @@
 {
-  "name": "dd.js",
+  "name": "dd",
   "description": "a light weight framework for data driven front ends",
   "author": "Alex Boatwright <drdelambre@gmail.com>",
   "version": "0.1.0",
@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/drdelambre/drdelambre.git"
   },
-  "main": "./src/dd",
+  "main": "./dd.js",
   "devDependencies": {
     "grunt": "~0.4.4",
     "grunt-contrib-jshint": "~0.10.0",
