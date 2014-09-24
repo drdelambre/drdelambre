@@ -81,11 +81,11 @@
 	// $dd.init:
 	//		Stores up function calls until the document.ready
 	//		then blasts them all out
-	if(typeof document !== "undefined"){
+	if(typeof window.document !== "undefined"){
 		self.init = (function(){
 			var c = [], t, ni;
 			t = setInterval(function(){
-				if(!document.body){
+				if(!window.document.body){
 					return;
 				}
 				clearInterval(t);

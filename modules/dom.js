@@ -23,14 +23,14 @@
 			return [];
 		}
 		var sels = selector.split(','),
-			context = _context||document,
+			context = _context||window.document,
 			res = [],
 			ni,idpos,ctx;
 		for(ni = 0; ni < sels.length; ni++){
 			idpos = sels[ni].lastIndexOf('#');
 			ctx = context;
 			if(idpos > 0){
-				ctx = document.getElementById(sels[ni].substr(idpos).match(/^#[^\s]*/)[0]);
+				ctx = window.document.getElementById(sels[ni].substr(idpos).match(/^#[^\s]*/)[0]);
 				sels[ni] = sels[ni].substr(idpos).replace(/^#[^\s]*[\s]*/,'');
 			}
 			if(!sels[ni].length){
@@ -48,7 +48,7 @@
 		fn = {
 			css: function(dom,obj){
 				if(lib.type(obj,'string')){
-					var val = document.defaultView.getComputedStyle(dom[0])[obj.replace(/-(\w)/g,cssCap)];
+					var val = window.document.defaultView.getComputedStyle(dom[0])[obj.replace(/-(\w)/g,cssCap)];
 					if(lib.type(val,'undefined')||val === 'none'){
 						return;
 					}
@@ -136,7 +136,7 @@
 			},
 			__closest: function(dom,selector){
 				var elems = [],
-					cap = document.documentElement,
+					cap = window.document.documentElement,
 					ni,no,len,curr,depth,found;
 
 				if(typeof selector !== 'string' && !selector.hasOwnProperty('_len')){
@@ -360,7 +360,7 @@
 				newDom._selector = dom._selector;
 				newDom._len = dom._len;
 				for(ni = 0; ni < dom._len; ni++){
-					temp = document.createElement(dom[ni].nodeName);
+					temp = window.document.createElement(dom[ni].nodeName);
 					attr = dom[ni].attributes;
 					for(no = 0; no < attr.length; no++){
 						temp.setAttribute(attr[no].name,attr[no].value);
@@ -378,13 +378,13 @@
 				}
 			
 				var body = dom[0].ownerDocument.body,
-					clientTop  = document.documentElement.clientTop  || body.clientTop  || 0,
-					clientLeft = document.documentElement.clientLeft || body.clientLeft || 0,
-					scrollTop  = window.pageYOffset || document.documentElement.scrollTop  || body.scrollTop,
-					scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || body.scrollLeft,
+					clientTop  = window.document.documentElement.clientTop  || body.clientTop  || 0,
+					clientLeft = window.document.documentElement.clientLeft || body.clientLeft || 0,
+					scrollTop  = window.pageYOffset || window.document.documentElement.scrollTop  || body.scrollTop,
+					scrollLeft = window.pageXOffset || window.document.documentElement.scrollLeft || body.scrollLeft,
 					top  = box.top  + scrollTop  - clientTop,
 					left = box.left + scrollLeft - clientLeft,
-					styles = document.defaultView.getComputedStyle(dom[0]),
+					styles = window.document.defaultView.getComputedStyle(dom[0]),
 
 					p_top = parseFloat(styles.getPropertyValue('padding-top')),
 					p_bottom = parseFloat(styles.getPropertyValue('padding-bottom')),
@@ -560,12 +560,12 @@
 			fire: function(dom,evt){
 				function real_fire(obj,_evt){
 					var evObj;
-					if(document.createEvent){
-						evObj = document.createEvent('MouseEvent');
+					if(window.document.createEvent){
+						evObj = window.document.createEvent('MouseEvent');
 						evObj.initMouseEvent(_evt, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 						obj.dispatchEvent(evObj);
-					} else if(document.createEventObject){
-						evObj = document.createEventObject();
+					} else if(window.document.createEventObject){
+						evObj = window.document.createEventObject();
 						obj.fireEvent('on' + _evt, evObj);
 					}
 				}
@@ -628,7 +628,7 @@
 		}
 
 		if(/^[^<]*(<[\w\W]+>)[^>]*$/.test(selector)){
-			var elem = document.createElement('div'),
+			var elem = window.document.createElement('div'),
 				no,c;
 			elem.innerHTML = selector.replace(/(^\s*|\s*$)/g,'');
 			c = Array.prototype.slice.call(elem.childNodes,0);
@@ -671,7 +671,7 @@
 	};
 
 	ret_func.atPoint = function(x,y){
-		return lib.dom(document.elementFromPoint(x,y));
+		return lib.dom(window.document.elementFromPoint(x,y));
 	};
 
 	lib.mixin({

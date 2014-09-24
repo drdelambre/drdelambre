@@ -1,13 +1,7 @@
 // polyfill for using querySelectorAll in old doms
-;(function(factory){
-	if(typeof define === 'function' && define.amd) {
-		define([], factory);
-	} else {
-		factory();
-	}
-})(function(){
-	document.querySelectorAll = document.querySelectorAll||function(selector){
-		var doc = document,
+;(function(){
+	window.document.querySelectorAll = window.document.querySelectorAll||function(selector){
+		var doc = window.document,
 			head = doc.documentElement.firstChild,
 			styleTag = doc.createElement('style');
 		head.appendChild(styleTag);
@@ -18,4 +12,4 @@
 
 		return doc._qsa;
 	};
-});
+})();

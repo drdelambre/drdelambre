@@ -1,4 +1,3 @@
-/* {"requires": ["dd","polyfill/keys","modules/dom"]} */
 // $dd.touch
 //		Browsers crapped on making themselves touch compatible
 //		why should you suffer?
@@ -6,12 +5,15 @@
 ;(function(factory){
 	if(typeof define === 'function' && define.amd) {
 		define(['../dd','../polyfill/keys','./dom'], factory);
+	} else if (typeof exports === 'object') {
+		module.exports = factory(require('../dd'));
+		require('../modules/dom');
 	} else {
 		factory($dd);
 	}
 })(function(lib){
 	lib.mixin({
-		istouch: !!('ontouchend' in document),
+		istouch: !!('ontouchend' in window.document),
 		touch : function(options){
 			var touches = {},
 				evts = {},
