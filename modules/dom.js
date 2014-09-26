@@ -274,6 +274,10 @@
 				return dom;
 			},
 			before: function(dom,elem){
+				if(!elem){
+					return dom;
+				}
+
 				var ni, no;
 				if(!elem.hasOwnProperty('_len')){
 					elem = lib.dom(elem);
@@ -289,6 +293,10 @@
 				return dom;
 			},
 			after: function(dom,elem){
+				if(!elem){
+					return dom;
+				}
+
 				var ni, no;
 				if(!elem.hasOwnProperty('_len')){
 					elem = lib.dom(elem);
@@ -301,6 +309,8 @@
 						dom[ni].parentNode.insertBefore(elem[no],dom[ni].nextSibling);
 					}
 				}
+
+				return dom;
 			},
 			next: function(dom,selector){
 				if(!dom[0]){
