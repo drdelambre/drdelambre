@@ -35,14 +35,12 @@
 				_data.element = true;
 				lib.init(function(){
 					_data.element = lib.dom(self.template).html();
-					console.log('setting template', _data.element);
 				});
 			}
 
 			if(_data.hasOwnProperty('element')){
 				lib.init(function(){
 					self.element = lib.dom(_data.element);
-					console.log('with element', self.element);
 				});
 			}
 		}).on_fill(function(_data){
