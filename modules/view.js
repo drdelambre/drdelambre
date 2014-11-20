@@ -17,19 +17,29 @@
 			self._view_fill = lib.extend(self._view_fill||{},def);
 
 			return self;
-		},
-		from_model: function(self,model){
-			self.extend(model.def || {});
-			self.fill(model.out());
-
-			return self;
 		}
 	});
 
 	var base = basemodel();
 
 	var ret = function(def){
-		var self = base(def).on_fill(function(_data){
+		var self;
+
+		if(def.hasOwnProperty('inherits')){
+			self = def.inherits();
+			delete def.inherits;
+			self.extend(def);
+			self.view_fill = function(def){
+				def = def || {};
+				self._view_fill = lib.extend(self._view_fill||{},def);
+
+				return self;
+			};
+		} else {
+			self = base(def);
+		}
+
+		self.on_fill(function(_data){
 			var template = _data.template || self.template;
 			if(!_data.hasOwnProperty('element') && !self.hasOwnProperty('element') && template){
 				_data.element = true;
@@ -60,7 +70,7 @@
 	};
 
 	lib.mixin({
-		view_model: ret
+		view: ret
 	});
 
 	return ret;
