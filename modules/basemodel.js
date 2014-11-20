@@ -14,40 +14,6 @@
 	// stuff to exclude from the serialization
 	var blacklist = /^(_.*|def|on_fill|on_out|fill|out|extend|attach|map|type|errors|validate)$/;
 
-	// lets only add clean data to our models
-	function _cleanNumbers(obj){
-		var type = lib.type(obj),
-			ni;
-
-		if(/^(b.*|nu.*|f.*)$/.test(type)){
-			return obj;
-		}
-
-		if(type === 'string'){
-			if(!obj || obj === 'null'){
-				obj = null;
-			} else if(!isNaN(parseFloat(obj)) && isFinite(parseFloat(obj))){
-				return parseFloat(obj);
-			}
-
-			return obj;
-		}
-
-		if(type === 'array'){
-			for(ni = 0; ni < obj.length; ni++){
-				obj[ni] = _cleanNumbers(obj[ni]);
-			}
-		}
-
-		if(type === 'object'){
-			for(ni in obj){
-				obj[ni] = _cleanNumbers(obj[ni]);
-			}
-		}
-
-		return obj;
-	}
-
 	// this bit of code, when called, returns a constructor for a model,
 	// that loads all of the functions in ret.fns at the time of calling
 	// this function
@@ -102,7 +68,7 @@
 
 				a = null;
 				if(!def[ni].type){
-					self[ni] = _cleanNumbers(data[na]);
+					self[ni] = data[na];
 					continue;
 				}
 				if(!lib.type(def[ni]['default'], 'array')){
