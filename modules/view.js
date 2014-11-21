@@ -25,6 +25,8 @@
 	var ret = function(def){
 		var self;
 
+		def = def || {};
+
 		if(def.hasOwnProperty('inherits')){
 			self = def.inherits();
 			delete def.inherits;
