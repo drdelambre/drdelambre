@@ -24,10 +24,11 @@
 				if(ret.isOpen){
 					return ret;
 				}
+
+				ret.isOpen = true;
 				if(lib.type(on_open,'function')){
 					on_open();
 				}
-				ret.isOpen = true;
 
 				return ret;
 			};
@@ -36,10 +37,10 @@
 					return ret;
 				}
 
+				ret.isOpen = false;
 				if(lib.type(on_close,'function')){
 					on_close();
 				}
-				ret.isOpen = false;
 
 				return ret;
 			};
