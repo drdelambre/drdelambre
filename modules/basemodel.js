@@ -80,6 +80,10 @@
 						}
 						continue;
 					}
+					if(self[ni] && lib.type(self[ni].fill, 'function')){
+						self[ni].fill(data[na]);
+						continue;
+					}
 					self[ni] = new def[ni].type(data[na]);
 					continue;
 				}
