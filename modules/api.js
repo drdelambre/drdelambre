@@ -225,6 +225,8 @@
 		return _xhr;
 	}
 
+	self = ajax;
+
 	self.raw = function(url,data,callback,method){
 		return ajax({
 			method: method||'GET',
