@@ -10,6 +10,9 @@
 		factory($dd);
 	}
 })(function(lib){
+	if(lib.hasOwnProperty('qr')){
+		return;
+	}
 	var qr_lib = (function(){
 			// DI QRCode Library
 			// originally done by Kazuhiko Arase

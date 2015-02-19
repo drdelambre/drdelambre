@@ -14,6 +14,9 @@
 		factory(global,$dd);
 	}
 })(typeof window !== "undefined" ? window : this, function(global, lib){
+	if(lib.hasOwnProperty('keys')){
+		return;
+	}
 	var keyStatus = {},
 		keyMap = {},
 		add = function(evt){

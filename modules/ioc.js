@@ -14,6 +14,9 @@
 		factory($dd);
 	}
 })(function(lib){
+	if(lib.hasOwnProperty('ioc')){
+		return;
+	}
 	lib.mixin({
 		ioc: (function(){
 			var ret = {},

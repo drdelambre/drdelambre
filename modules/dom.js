@@ -18,6 +18,9 @@
 		factory($dd);
 	}
 })(function(lib){
+	if(lib.hasOwnProperty('dom')){
+		return;
+	}
 	var cleanSelector = function(selector,_context){
 		if(!selector.length){
 			return [];

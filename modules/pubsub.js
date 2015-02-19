@@ -11,6 +11,10 @@
 		factory($dd);
 	}
 })(function(lib){
+	if(lib.hasOwnProperty('pub')){
+		return;
+	}
+
 	var cache = {};
 
 	function generate_topic(topic){

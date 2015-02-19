@@ -11,6 +11,9 @@
 		factory($dd, basemodel);
 	}
 })(function(lib, basemodel){
+	if(lib.hasOwnProperty('view')){
+		return;
+	}
 	basemodel.fns = lib.extend(basemodel.fns, {
 		view_fill: function(self,def){
 			def = def || {};

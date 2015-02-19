@@ -23,6 +23,10 @@
 		factory($dd);
 	}
 })(function(lib){
+	if(lib.hasOwnProperty('route')){
+		return;
+	}
+
 	var paths = {},
 		current = null;
 

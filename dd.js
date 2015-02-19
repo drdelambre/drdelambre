@@ -23,6 +23,10 @@
 		factory(global);
 	}
 })(typeof window !== "undefined" ? window : this, function(global){
+	if(global.hasOwnProperty('$dd')){
+		return global.$dd;
+	}
+
 	var self = {};
 
 	// $dd.type:

@@ -11,6 +11,9 @@
 		factory($dd);
 	}
 })(function(lib, basemodel){
+	if(lib.hasOwnProperty('model')){
+		return;
+	}
 	var ret = basemodel();
 
 	lib.mixin({

@@ -8,6 +8,10 @@
 		factory($dd);
 	}
 })(function(lib){
+	if(lib.hasOwnProperty('preload')){
+		return;
+	}
+
 	var imgs = {};
 
 	lib.mixin({
