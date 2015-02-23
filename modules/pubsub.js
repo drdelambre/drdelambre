@@ -55,6 +55,12 @@
 		return path_args.concat(args||[]);
 	}
 
+	function create_async_pub(fun, params){
+		setTimeout(function(){
+			fun.apply(lib, params);
+		}, 1);
+	}
+
 	lib.mixin({
 		pub : function(){
 			var topic = arguments[0],
@@ -70,7 +76,7 @@
 				path_args = clean_path_args(topic,cache[t],args);
 
 				for(ni = 0; ni < cache[t].subs.length; ni++){
-					cache[t].subs[ni].apply(lib, path_args);
+					create_async_pub(cache[t].subs[ni], path_args);
 				}
 			}
 		},
