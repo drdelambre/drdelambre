@@ -69,7 +69,7 @@
 				ni, t, path_args;
 
 			for(t in cache){
-				if(!(new RegExp(t)).test(topic)){
+				if(!cache[t].regexp.test(topic)){
 					continue;
 				}
 				found = true;

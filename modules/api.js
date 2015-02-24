@@ -14,9 +14,10 @@
 		factory($dd);
 	}
 })(function(lib){
+	// processes an object into a querystring that can be passed to the server
 	function postString(obj, prefix){
 		var str = [], p, k, v;
-		if(lib.type(obj,'array')){
+		if(lib.type(obj, 'array')){
 			if(!prefix){
 				throw new Error('Sorry buddy, your object is wrong and you should feel bad');
 			}
@@ -24,7 +25,8 @@
 			for(p = 0; p < obj.length; p++){
 				k = prefix + "[" + p + "]";
 				v = obj[p];
-				str.push(typeof v === "object"?postString(v,k):encodeURIComponent(k) + "=" + encodeURIComponent(v));
+				str.push(typeof v === "object"?postString(v,k):encodeURIComponent(k) +
+					"=" + encodeURIComponent(v));
 			}
 		}
 
@@ -35,10 +37,80 @@
 				k = p;
 			}
 			v = obj[p];
-			str.push(typeof v === "object"?postString(v,k):encodeURIComponent(k) + "=" + encodeURIComponent(v));
+			str.push(typeof v === "object"?postString(v,k):encodeURIComponent(k) +
+				"=" + encodeURIComponent(v));
 		}
 		return str.join("&");
 	}
+
+	// generates a topic for the mock url resolver to use
+	function generate_topic(topic){
+		var ret = {
+			topic: topic,
+			path: '',
+			regexp: null,
+			keys: [],
+			methods: {}
+		};
+
+		ret.path = '^' + topic
+			.replace(/\/\(/g, '(?:/')
+			.replace(
+				/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g,
+				function(_, slash, format, key, capture, optional){ // jshint ignore:line
+					ret.keys.push({ name: key, optional: !! optional });
+					slash = slash || '';
+					return '' + (optional ? '' : slash) + '(?:' + (optional ? slash : '') +
+						(format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) +
+						')' + (optional || '');
+				}
+			)
+			.replace(/([\/.])/g, '\\$1')
+			.replace(/\*/g, '(.*)') + '$';
+
+		ret.regexp = new RegExp(ret.path);
+
+		return ret;
+	}
+
+	// slices variables out of the url and joins it with the data sent
+	// to the ajax call
+	function clean_path_args(path,descriptor,args){
+		var path_args = descriptor.regexp.exec(path).slice(1) || [],
+			ni,no;
+
+		// clean the numbers up
+		for(ni = 0; ni < path_args.length; ni++){
+			no = parseFloat(path_args[ni]);
+			if(!isNaN(no)){
+				path_args[ni] = no;
+			}
+		}
+
+		return path_args.concat(args||[]);
+	}
+
+	function create_async_callback(callback, args, params){
+		args.push(function(status, responseText){
+			if(params.type === 'json'){
+				try {
+					responseText = JSON.parse(responseText);
+				} catch(e) {}
+			}
+
+			if(status === 200 && lib.type(params.success, 'function')){
+				params.success(responseText);
+			} else if(status !== 200 && lib.type(params.error, 'function')){
+				params.error(responseText);
+			}
+		});
+
+		setTimeout(function(){
+			callback.apply(args)
+		}, 0);
+	}
+
+	// creates an xhr object, real or imaginary
 	function xhr(options){
 		var origin, parts, crossDomain, _ret;
 		function createStandardXHR(){ try { return new window.XMLHttpRequest(); } catch(e){} }
@@ -185,7 +257,8 @@
 
 		return _ret;
 	}
-	function ajax(params){
+
+	var self = function(params){
 		params = lib.extend({
 			url: '',
 			method: 'GET',
@@ -198,17 +271,40 @@
 			error: null
 		},params);
 
-		var _xhr = xhr(params);
+		params.method = params.method.toUpperCase();
+
+		var topic = params.url,
+			ni, t, _xhr,
+			path_args;
+
+		for(t in _mocks){
+			if(!_mocks[t].regexp.test(topic)){
+				continue;
+			}
+			if(!_mocks[t].methods.hasOwnProperty(params.method)){
+				continue;
+			}
+
+			path_args = clean_path_args(topic, _mocks[t], params.data);
+
+			create_async_callback(_mocks[t].methods[params.method], path_args, params);
+			return;
+		}
+
+		// didn't need to mock it, let's do it for real
+		_xhr = xhr(params),
+
 		if(_xhr.hasOwnProperty('_jsonp')){
 			params.method = 'GET';
 		}
 
 		if(params.method === 'GET'){
-			params.url += '?' + postString(params.data);
+			params.url += (params.indexOf('?') ? '?' : '&') +
+				postString(params.data);
 		}
 
-		_xhr.open(params.method,params.url,params.async);
-		_xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		_xhr.open(params.method, params.url, params.async);
+		_xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		_xhr.responseType = params.type;
 		_xhr.onreadystatechange = function(){
 			if(_xhr.readyState !== 4){
@@ -221,48 +317,62 @@
 				params.success(_xhr.response);
 			}
 		};
-		_xhr.send(params.method==='POST'?postString(params.data):null);
-		return _xhr;
-	}
 
-	var self = ajax;
-
-	self.raw = function(url,data,callback,method){
-		return ajax({
-			method: method||'GET',
-			url: url,
-			data: data,
-			success: function(result){
-				if(lib.type(callback,'function')){
-					callback(result);
-				}
-			}
-		});
-	};
-
-	// if you're going to be using pre and post filters on the data
-	// make sure you return true to continue the chain, or return
-	// false to cancel it
-	self.route = function(name,url,pre,post,method){	// jshint ignore:line
-		name = name.trim();
-		pre = pre||function(){ return true; };
-		post = post||function(){ return true; };
-
-		if(/^(route|raw|config)$/.test(name)){
-			throw new Error('invalid name sent to $dd.api.route');
+		for(ni = 0; ni < _before.length; ni++){
+			_before[ni](_xhr);
 		}
 
-		self[name] = function(params,callback){
-			if(!pre(params)){
-				return;
-			}
+		_xhr.send(params.method==='POST' ? postString(params.data) : null);
 
-			self.raw(url,params,function(data){
-				if(post(data) && lib.type(callback,'function')){
-					callback(data);
-				}
-			},method||'GET');
-		};
+		return _xhr;
+	},
+	_before = [],
+	_mocks = {};
+
+	// $dd.api.before registers a function that is called before every
+	// ajax request, being passed the current xhr object
+	self.before = function(callback){
+		if(!lib.type(callback, 'function')){
+			return;
+		}
+
+		_before.push(callback);
+	};
+
+	// $dd.api.mock uses the same string functions as the pubsub module
+	// to match a url and intercept a request coming through $dd.api()
+	// allowing you to write network code without having an api endpoint
+	// the callback function takes three parameters:
+	//		callback(url, data, cb)
+	// where url is an array of parameters parsed from the url,
+	// data is the data sent to the ajax call, and cb is a callback
+	// function for the completion of the mock call. cb takes two
+	// parameters:
+	//		cb(statusCode, responseText)
+	self.mock = function(params){
+		if(!params.hasOwnProperty('url')){
+			console.log('$dd.api.mock called without url parameter');
+			return;
+		}
+
+		params = lib.extend({
+			method: 'GET',
+			callback: function(){}
+		}, params);
+		params.method = params.method.toUpperCase();
+
+		if(!lib.type(params.callback, 'function')){
+			return;
+		}
+
+		topic = generate_topic(params.url);
+		if(!_mocks.hasOwnProperty(topic.path)){
+			_mocks[topic.path] = topic;
+		}
+		if(_mocks[topic.path].methods.hasOwnProperty(params.method)){
+			console.log('$dd.api.mock: overwritting mock with ' + params.url);
+		}
+		_mocks[topic.path].methods[params.method] = params.callback;
 	};
 
 	lib.mixin({
