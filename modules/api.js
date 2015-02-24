@@ -299,7 +299,7 @@
 		}
 
 		if(params.method === 'GET'){
-			params.url += (params.indexOf('?') ? '?' : '&') +
+			params.url += (params.url.indexOf('?') ? '?' : '&') +
 				postString(params.data);
 		}
 
