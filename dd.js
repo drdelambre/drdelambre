@@ -46,7 +46,9 @@
 				t = 'null';
 			} else if(more === '[object Date]'){
 				t = 'date';
-			} else if(more === '[object DOMWindow]' || more === '[object global]'){
+			} else if(more === '[object DOMWindow]' ||
+					more === '[object Window]' ||
+					more === '[object global]'){
 				t = 'node';
 			} else if(variable.nodeType){
 				if(variable.nodeType === 1){
