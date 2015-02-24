@@ -14,6 +14,7 @@
   * [ioc](#ioc)
   * [keys](#keys)
   * [model](#model)
+  * [touch](#touch)
 
 ## The Namespace
 $dd, by itself, comes with a collection of handy tools for normalizing repetitive javascript tasks.
@@ -254,4 +255,32 @@ console.log(BeanBurrito.items[0].name + ' [' + BeanBurrito.items[0].flavor + '/1
 //		Pinto [10/10]
 ```
   
+### touch
+------  
+> Touch interfaces are weird in the browser. This module normalizes mouse and touch events into a single interface, connected to an element
+
+When you're trying to write code around user interaction, there are edge cases between mouse and touch events. This module simulates the mouse as a single finger performing actions on the DOM, with events formatted as such:
+
+```
+{
+	id: finger identifier,
+	target: the element the event originated in,
+	pageX: the coordinates of the event's left offset in window space,
+	pageY: the coordinates of the event's top offset in window space
+}
+```
+
+Instantiating the touch class is as simple as
+
+```
+$dd.touch({
+	element: the upper element you're watching,
+	start: a function to call when a finger touches the screen,
+	move: a function to call when a finger moves,
+	end: a function to call when a finger is lifted
+})
+```
+
+each function takes the event object described above as it's sole parameter
+
 ### and so much more!
