@@ -292,7 +292,7 @@
 		}
 
 		// didn't need to mock it, let's do it for real
-		_xhr = xhr(params),
+		_xhr = xhr(params);
 
 		if(_xhr.hasOwnProperty('_jsonp')){
 			params.method = 'GET';
