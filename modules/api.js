@@ -106,7 +106,7 @@
 		});
 
 		setTimeout(function(){
-			callback.apply(args)
+			callback.apply(lib, args)
 		}, 0);
 	}
 
