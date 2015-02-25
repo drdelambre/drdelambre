@@ -33,7 +33,9 @@
 		if(def.hasOwnProperty('inherits')){
 			self = def.inherits();
 			delete def.inherits;
+
 			self.extend(def);
+
 			self.view_fill = function(def){
 				def = def || {};
 				self._view_fill = lib.extend(self._view_fill||{},def);
@@ -45,6 +47,9 @@
 		}
 
 		self.on_fill(function(_data){
+			if(!_data || (lib.type(_data, 'object') && !Object.keys(_data).length)){
+				return;
+			}
 			var template = _data.template || self.template;
 			if(!_data.hasOwnProperty('element') && !self.hasOwnProperty('element') && template){
 				_data.element = true;
@@ -62,8 +67,13 @@
 			if(!self._view_fill){
 				return;
 			}
-			for(var ni in self._view_fill){
-				if(!_data.hasOwnProperty(ni)){
+			var ni, mapped;
+			for(ni in self._view_fill){
+				if(!self.def.hasOwnProperty(ni)){
+					continue;
+				}
+				mapped = self.def[ni].external[0] || ni;
+				if(!_data.hasOwnProperty(mapped)){
 					continue;
 				}
 

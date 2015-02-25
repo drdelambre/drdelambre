@@ -203,6 +203,8 @@
 					continue;
 				}
 				if(ni in self.def){
+					self.def[ni]['default'] = _def[ni];
+					self[ni] = _def[ni];
 					continue;
 				}
 
