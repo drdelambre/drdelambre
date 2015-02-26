@@ -28,7 +28,7 @@
 	var ret = function(def){
 		var self;
 
-		def = def || {};
+		def = lib.extend({ element: null }, def || {});
 
 		if(def.hasOwnProperty('inherits')){
 			self = def.inherits();
@@ -47,26 +47,21 @@
 		}
 
 		self.on_fill(function(_data){
-			if(!_data || (lib.type(_data, 'object') && !Object.keys(_data).length)){
-				return;
-			}
 			var template = _data.template || self.template;
-			if(!_data.hasOwnProperty('element') && !self.hasOwnProperty('element') && template){
-				_data.element = true;
+			if(!_data.hasOwnProperty('element') && !self.element && template){
 				lib.init(function(){
-					_data.element = lib.dom(self.template).html();
+					self.element = lib.dom(lib.dom(template).html());
 				});
-			}
-
-			if(_data.hasOwnProperty('element')){
+			} else if(_data.hasOwnProperty('element')){
 				lib.init(function(){
 					self.element = lib.dom(_data.element);
 				});
 			}
-		}).on_fill(function(_data){
+
 			if(!self._view_fill){
 				return;
 			}
+
 			var ni, mapped;
 			for(ni in self._view_fill){
 				if(!self.def.hasOwnProperty(ni)){
