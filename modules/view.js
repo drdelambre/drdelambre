@@ -51,6 +51,9 @@
 			if(!_data.hasOwnProperty('element') && !self.element && template){
 				lib.init(function(){
 					self.element = lib.dom(lib.dom(template).html());
+					if(self._view_fill.hasOwnProperty('element')){
+						self._view_fill.element();
+					}
 				});
 			} else if(_data.hasOwnProperty('element')){
 				lib.init(function(){
