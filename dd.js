@@ -89,27 +89,45 @@
 	//		then blasts them all out
 	if(typeof window !== "undefined" && typeof window.document !== "undefined"){
 		self.init = (function(){
-			var c = [], t, ni;
-			t = setInterval(function(){
-				if(!window.document.body){
-					return;
-				}
-				clearInterval(t);
-				t = null;
-				for(ni = 0; ni < c.length; ni++){
-					c[ni]();
-				}
-			},10);
-			var ret = function(_f){
-				if(!t){
+			var c = [],
+				loaded = false,
+				onload, ni;
+
+			if(document.addEventListener){
+				onload = function() {
+					document.removeEventListener( "DOMContentLoaded", onload, false );
+					loaded = true;
+
+					for(ni = 0; ni < c.length; ni++){
+						c[ni]();
+					}
+				};
+
+			} else if(document.attachEvent){
+				onload = function() {
+					if(document.readyState === "complete"){
+						document.detachEvent("onreadystatechange", onload);
+						loaded = true;
+						for(ni = 0; ni < c.length; ni++){
+							c[ni]();
+						}
+					}
+				};
+			}
+
+			if ( document.addEventListener ) {
+				document.addEventListener( "DOMContentLoaded", onload, false );
+			} else if ( document.attachEvent ) {
+				document.attachEvent("onreadystatechange", onload);
+			}
+
+			return function(_f){
+				if(loaded){
 					_f();
 				} else {
 					c.push(_f);
 				}
 			};
-
-			ret.queue = c;
-			return ret;
 		})();
 	}
 
