@@ -80,6 +80,10 @@
 						}
 						continue;
 					}
+					if(data[na] === null){
+						self[ni] = null;
+						continue;
+					}
 					if(self[ni] && lib.type(self[ni].fill, 'function')){
 						self[ni].fill(data[na]);
 						continue;
