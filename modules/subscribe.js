@@ -21,6 +21,16 @@
 					cache[ni].apply(this,args);
 				}
 			};
+			ret.remove = function(callback){
+				var ni;
+				for(ni = 0; ni < cache.length; ni++){
+					if(cache[ni] !== callback){
+						continue;
+					}
+					cache.splice(ni, 1);
+					break;
+				}
+			};
 
 			return ret;
 		}
