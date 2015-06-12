@@ -8,7 +8,7 @@
 	} else if (typeof exports === 'object') {
 		module.exports = factory(require('../dd'),require('./basemodel'));
 	} else {
-		factory($dd);
+		factory($dd, $dd.basemodel);
 	}
 })(function(lib, basemodel){
 	if(lib.hasOwnProperty('model')){

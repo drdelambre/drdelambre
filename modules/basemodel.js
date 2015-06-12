@@ -326,5 +326,9 @@
 		}
 	};
 
+	lib.mixin({
+		basemodel: ret
+	});
+
 	return ret;
 });
