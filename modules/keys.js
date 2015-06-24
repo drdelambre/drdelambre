@@ -45,6 +45,7 @@
 					case 'right': return 39;
 					case 'up': return 38;
 					case 'down': return 40;
+					case 'esc': return 27;
 				}
 			}
 			return str.toUpperCase().charCodeAt(0);
