@@ -106,20 +106,16 @@
 				}
 
 
-				if(Object.keys(touches).length === 1 && lib.istouch){
-					win.on('touchmove', move);
-					win.on('touchend', end);
-					win.on('touchcancel', end);
-
+				if(Object.keys(touches).length === 1){
 					evts = {};
-				} else if(!lib.istouch){
-					win.on('mousemove', move);
-					win.on('mouseup', end);
 				}
 
 				return false;
 			}
 			function move(evt){
+				if(!Object.keys(touches).length){
+					return;
+				}
 				var ni, touch;
 				evt.preventDefault();
 				if(!lib.istouch){
@@ -157,6 +153,9 @@
 				t();
 			};
 			function end(evt){
+				if(!Object.keys(touches).length){
+					return;
+				}
 				var win = lib.dom(window),
 					touch, ni;
 				if(!lib.istouch){
@@ -184,15 +183,6 @@
 					return;
 				}
 
-				if(lib.istouch){
-					win.off('touchmove', move);
-					win.off('touchend', end);
-					win.off('touchcancel', end);
-				} else {
-					win.off('mousemove', move);
-					win.off('mouseup', end);
-				}
-
 				touches = {};
 				evts = {};
 				if(throttle){
@@ -218,6 +208,15 @@
 
 			lib.init(function(){
 				lib.dom(self.element).on(lib.istouch?'touchstart':'mousedown', start);
+				if(lib.istouch){
+					win.on('touchmove', move);
+					win.on('touchend', end);
+					win.on('touchcancel', end);
+				} else {
+					win.on('mousemove', move);
+					win.on('mouseup', end);
+				}
+
 			});
 
 			return self;
