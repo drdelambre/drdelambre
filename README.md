@@ -121,10 +121,9 @@ $dd.dom('#start-page').delay(100).fire('scroll');
 
 ### pubsub
 ------  
-> Publish/Subscribe module for multi-casting events and loose coupling of your data structures. Declaring a channel is now required in an attempt to retain documentation of the different events.
+> Publish/Subscribe module for multi-casting events and loose coupling of your data structures.
 
 ```Javascript
-$dd.channel('/chat/:status','Fired whenever a chat object is created or destroyed. Takes the chat object as the first parameter');
 (function(){
 	var self = {
 		chat_entries:[]
