@@ -80,7 +80,7 @@
 						self.start(makeEvt(touch));
 					}
 
-					if(!ignoreAll){
+					if(!ignoreAll && self.element !== window){
 						evt.preventDefault();
 					}
 				} else {
@@ -114,6 +114,9 @@
 			}
 			function move(evt){
 				if(!Object.keys(touches).length){
+					return;
+				}
+				if(!lib.type(self.move,'function')){
 					return;
 				}
 				var ni, touch;
