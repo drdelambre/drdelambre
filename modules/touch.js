@@ -166,7 +166,7 @@
 				var win = lib.dom(window),
 					touch, ni;
 
-				if(evt.type === 'mouseup') {
+				if(evt.type !== 'mouseup') {
 					for(ni = 0; ni < evt.changedTouches.length; ni++){
 						touch = evt.changedTouches[ni];
 						if(!touches[touch.identifier]){
@@ -185,6 +185,7 @@
 						self.end(makeEvt(evt));
 					}
 					delete touches[0];
+				}
 
 				if(Object.keys(touches).length){
 					return;
