@@ -148,7 +148,6 @@
 
 				for(ni = 0; ni < dom._len; ni++){
 					curr = dom[ni];
-					depth = 0;
 					while(curr !== cap){
 						if(typeof selector !== 'string'){
 							found = false;
@@ -169,18 +168,17 @@
 							curr = cap;
 							break;
 						}
-						depth++;
 						curr = curr.parentNode;
 					}
 					if(curr === cap){
 						continue;
 					}
-					elems.push({ elem: curr, depth: depth });
+					elems.push(curr);
 				}
 				len = elems.length;
 				for(ni = 0; ni < len; ni++){
 					for(no = ni+1; no < len;no++){
-						if(elems[ni].elem !== elems[no].elem){
+						if(elems[ni] !== elems[no]){
 							continue;
 						}
 						elems.splice(no--,1);
@@ -201,7 +199,7 @@
 
 				len = curr._len = elems.length;
 				for(ni = 0; ni < len; ni++){
-					curr[ni] = elems[ni].elem;
+					curr[ni] = elems[ni];
 				}
 				return curr;
 			},
@@ -614,19 +612,34 @@
 			_done: []
 		};
 
-		//some static functions
-		var ni;
-		var apply_fns = function(dom,index){
-			dom[index] = function(){
-				var args = Array.prototype.slice.call(arguments);
-				args.unshift(dom);
-				return fn[index].apply(dom,args);
-			};
-		};
+		self.css = function(obj) { return fn.css(self, obj); };
+		self.addClass = function(_selector) { return fn.addClass(self, _selector); };
+		self.removeClass = function(_selector) { return fn.removeClass(self, _selector); };
+		self.matches = function(_selector) { return fn.matches(self, _selector); };
+		self.find = function(_selector) { return fn.find(self, _selector); };
+		self.closest = function(_selector) { return fn.closest(self, _selector); };
+		self.remove = function() { return fn.remove(self); };
+		self.delay = function(time) { return fn.delay(self, time); };
+		self.done = function(cb) { return fn.done(self, cb); };
+		self.before = function(elem) { return fn.before(self, elem); };
+		self.after = function(elem) { return fn.after(self, elem); };
+		self.append = function(elem) { return fn.append(self, elem); };
+		self.prepend = function(elem) { return fn.prepend(self, elem); };
+		self.next = function(_selector) { return fn.next(self, _selector); };
+		self.nextAll = function(_selector) { return fn.nextAll(self, _selector); };
+		self.prev = function(_selector) { return fn.prev(self, _selector); };
+		self.prevAll = function(_selector) { return fn.prevAll(self, _selector); };
+		self.clone = function() { return fn.clone(self); };
+		self.measure = function() { return fn.measure(self); };
+		self.get = function(index) { return fn.get(self, index); };
+		self.length = function() { return self._len; };
+		self.html = function(string) { return fn.html(self, string); };
+		self.on = function(evt, fn) { return fn.on(self, evt, fn); };
+		self.off = function(evt, fn) { return fn.off(self, evt, fn); };
+		self.fire = function(evt) { return fn.fire(self, evt); };
+		self.focus = function() { return fn.focus(self); };
+		self.each = function(cb) { return fn.each(self, cb); };
 
-		for(ni in fn){
-			apply_fns(self,ni);
-		}
 
 		self._back = context;
 
