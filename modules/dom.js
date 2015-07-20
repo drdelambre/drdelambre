@@ -634,8 +634,8 @@
 		self.get = function(index) { return fn.get(self, index); };
 		self.length = function() { return self._len; };
 		self.html = function(string) { return fn.html(self, string); };
-		self.on = function(evt, fn) { return fn.on(self, evt, fn); };
-		self.off = function(evt, fn) { return fn.off(self, evt, fn); };
+		self.on = function(evt, cb) { return fn.on(self, evt, cb); };
+		self.off = function(evt, cb) { return fn.off(self, evt, cb); };
 		self.fire = function(evt) { return fn.fire(self, evt); };
 		self.focus = function() { return fn.focus(self); };
 		self.each = function(cb) { return fn.each(self, cb); };

@@ -14,16 +14,14 @@
 	if(lib.hasOwnProperty('view')){
 		return;
 	}
-	basemodel.fns = lib.extend(basemodel.fns, {
+	var fns = {
 		view_fill: function(self,def){
 			def = def || {};
 			self._view_fill = lib.extend(self._view_fill||{},def);
 
 			return self;
 		}
-	});
-
-	var base = basemodel();
+	};
 
 	var ret = function(def){
 		var self;
@@ -36,14 +34,10 @@
 
 			self.extend(def);
 
-			self.view_fill = function(def){
-				def = def || {};
-				self._view_fill = lib.extend(self._view_fill||{},def);
-
-				return self;
-			};
+			self.view_fill = function(def){ return fn.view_fill(self, def); };
 		} else {
-			self = base(def);
+			self = basemodel()(def);
+			self.view_fill = function(def){ return fn.view_fill(self, def); };
 		}
 
 		self.on_fill(function(_data){

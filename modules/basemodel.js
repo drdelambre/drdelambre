@@ -28,6 +28,7 @@
 			self.extend = function(_def) { return ret.fns.extend(self, _def); };
 			self.attach = function(_def) { return ret.fns.attach(self, _def); };
 			self.map = function(_maps) { return ret.fns.map(self, _maps); };
+			self.type = function(_types) { return ret.fns.type(self, _types); };
 			self.on_fill = function(filter, fire_after) { return ret.fns.on_fill(self, filter, fire_after); };
 			self.on_out = function(filter, fire_before) { return ret.fns.on_out(self, filter, fire_before); };
 			self.validate = function(_map) { return ret.fns.validate(self, _map); };
