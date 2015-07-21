@@ -34,10 +34,10 @@
 
 			self.extend(def);
 
-			self.view_fill = function(def){ return fn.view_fill(self, def); };
+			self.view_fill = function(def){ return fns.view_fill(self, def); };
 		} else {
 			self = basemodel()(def);
-			self.view_fill = function(def){ return fn.view_fill(self, def); };
+			self.view_fill = function(def){ return fns.view_fill(self, def); };
 		}
 
 		self.on_fill(function(_data){
