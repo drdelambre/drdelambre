@@ -23,23 +23,24 @@
 			}
 
 			for(p = 0; p < obj.length; p++){
-				k = prefix + "[" + p + "]";
+				k = prefix + "[]";
+				v = obj[p];
+				str.push(typeof v === "object"?postString(v,k):encodeURIComponent(k) +
+					"=" + encodeURIComponent(v));
+			}
+		} else {
+			for(p in obj) {
+				if(prefix){
+					k = prefix + "[" + p + "]";
+				} else {
+					k = p;
+				}
 				v = obj[p];
 				str.push(typeof v === "object"?postString(v,k):encodeURIComponent(k) +
 					"=" + encodeURIComponent(v));
 			}
 		}
 
-		for(p in obj) {
-			if(prefix){
-				k = prefix + "[" + p + "]";
-			} else {
-				k = p;
-			}
-			v = obj[p];
-			str.push(typeof v === "object"?postString(v,k):encodeURIComponent(k) +
-				"=" + encodeURIComponent(v));
-		}
 		return str.join("&");
 	}
 
