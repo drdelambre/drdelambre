@@ -654,7 +654,7 @@
 		}
 
 		if(/^[^<]*(<[\w\W]+>)[^>]*$/.test(selector)){
-			var elem = window.document.createElement('div'),
+			var elem = window.document.createElement('tbody'),
 				no,c;
 			elem.innerHTML = selector.replace(/(^\s*|\s*$)/g,'');
 			c = Array.prototype.slice.call(elem.childNodes,0);
