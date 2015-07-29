@@ -40,7 +40,6 @@
 					"=" + encodeURIComponent(v));
 			}
 		}
-
 		return str.join("&");
 	}
 
@@ -320,6 +319,7 @@
 			}
 		};
 
+		console.log('before', _before);
 		for(ni = 0; ni < _before.length; ni++){
 			_before[ni](_xhr);
 		}
@@ -376,6 +376,10 @@
 		}
 		_mocks[topic.path].methods[params.method] = params.callback;
 	};
+
+	if (lib.api) {
+		return;
+	}
 
 	lib.mixin({
 		api : self
