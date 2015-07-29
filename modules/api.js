@@ -319,7 +319,6 @@
 			}
 		};
 
-		console.log('before', _before);
 		for(ni = 0; ni < _before.length; ni++){
 			_before[ni](_xhr);
 		}
