@@ -4,8 +4,12 @@
 //		easy to bury in the code
 ;(function(factory){
 	if(typeof define === 'function' && define.amd) {
-		define(['../dd'], factory);
+		define([
+			'../dd',
+			'../polyfill/setImmediate'
+		], factory);
 	} else if (typeof exports === 'object') {
+		require('../polyfill/setImmediate');
 		module.exports = factory(require('../dd'));
 	} else {
 		factory($dd);
@@ -56,9 +60,9 @@
 	}
 
 	function create_async_pub(fun, params){
-		setTimeout(function(){
+		setImmediate(function(){
 			fun.apply(lib, params);
-		}, 1);
+		});
 	}
 
 	lib.mixin({
