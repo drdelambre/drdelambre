@@ -1,0 +1,4 @@
+window._ajaxCallbacks.jsonp_ABCD({
+	"id": 12,
+	"beans": "yolo"
+});
