@@ -679,3 +679,73 @@ describe('The magic model hierarchy', function() {
 		expect(model.sub[3] instanceof SubModel).to.be.true;
 	});
 });
+
+describe('The magic model validation', function() {
+	it('should not assign if deemed invalid', function() {
+		var model = new Model({
+			id: 12,
+			hashtag: 'yolo'
+		}).before({
+			hashtag: function(val) {
+				if (val !== 'selfie') {
+					return [ true, val ];
+				}
+
+				return [ false, val ];
+			}
+		});
+
+		model.hashtag = 'thuglife';
+		expect(model.hashtag).to.equal('yolo');
+
+		model.hashtag = 'selfie';
+		expect(model.hashtag).to.equal('selfie');
+	});
+
+	it('should transform data', function() {
+		var model = new Model({
+			id: 12,
+			hashtag: 'yolo'
+		}).before({
+			hashtag: function(val) {
+				return [ false, val.toUpperCase() ];
+			}
+		});
+
+		model.hashtag = 'thuglife';
+		expect(model.hashtag).to.equal('THUGLIFE');
+	});
+
+	it('should be picky', function() {
+		var model = new Model({
+			id: 12,
+			hashtag: 'yolo'
+		});
+
+		expect(function() {
+			model.before({
+				bean() {}
+			});
+		}).to.throw(
+			'Model: called before on a property (bean) that does not exist');
+	});
+
+	it('should accept arrays', function() {
+		var model = new Model({
+			id: 12,
+			hashtag: 'yolo'
+		}).before({
+			hashtag: [
+				function(val) {
+					return [ false, val.toUpperCase() ];
+				},
+				function(val) {
+					return [ false, val.slice(0, 4) ];
+				}
+			]
+		});
+
+		model.hashtag = 'thuglife';
+		expect(model.hashtag).to.equal('THUG');
+	});
+});
