@@ -240,6 +240,17 @@ describe('Ajax normalizing module', function() {
 			url: '/test/:id'
 		});
 
+		Ajax.mock({
+			url: '/test/frank',
+			method: 'POST',
+			callback() {}
+		});
+
+		Ajax.mock({
+			url: '/test/jones',
+			callback() {}
+		});
+
 		Ajax({
 			url: '/test/frank',
 			method: 'GET',
@@ -306,6 +317,53 @@ describe('Ajax normalizing module', function() {
 			try {
 				expect(spy1.callCount).to.equal(3);
 				expect(spy2.callCount).to.equal(3);
+
+				done();
+			} catch (e) {
+				done(e);
+			}
+		}, 10);
+	});
+
+	it('should make a sussessful post request', function(done) {
+		var serve = sinon.spy(function() {
+				return [
+					200,
+					{ 'Content-Type': 'application/json' },
+					'[{ "id": 12, "comment": "hashtag yolo" }]'
+				];
+			}),
+			success = sinon.spy(),
+			error = sinon.spy();
+
+		server.respondWith(serve);
+
+		Ajax({
+			url: '/test',
+			method: 'POST',
+			data: {
+				id: 12,
+				users: [
+					{ name: 'steve' },
+					{ name: 'bob' }
+				]
+			},
+			success: success,
+			error: error
+		});
+
+		server.respond();
+
+		setTimeout(function() {
+			var expected = encodeURI(
+				'id=12&users[][name]=steve&users[][name]=bob'
+			);
+
+			try {
+				expect(serve.args[0][0].requestBody)
+					.to.equal(expected);
+				expect(error.called).to.be.false;
+				expect(success.called).to.be.true;
 
 				done();
 			} catch (e) {

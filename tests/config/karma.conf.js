@@ -62,7 +62,8 @@ module.exports = function(config) {
 		},
 
 		proxies: {
-			'/beans': '/base/data/beans.json'
+			'/beans': '/base/data/beans.json',
+			'/bean_string': '/base/data/beans-string.json'
 		},
 
 		reporters: [ 'dots', 'coverage' ],

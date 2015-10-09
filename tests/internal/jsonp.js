@@ -131,4 +131,49 @@ describe('The JSONP back route', function() {
 		expect(network._options.script).to.not.exist;
 		expect(spy.callCount).to.equal(2);
 	});
+
+	it('should handle strings correctly', function(done) {
+		var network = createJSONP(),
+			on_success, on_error;
+
+		function finish() {
+			try {
+				expect(on_error.callCount).to.equal(0);
+				expect(on_success.callCount).to.equal(1);
+				expect(typeof on_success.args[0][0] === 'string')
+					.to.be.false;
+
+				expect(on_success.args[0][0]).to.eql({
+					id: 12,
+					beans: 'yolo'
+				});
+
+				done();
+			} catch (e) {
+				done(e);
+			}
+		}
+
+		on_success = sinon.spy(finish);
+		on_error = sinon.spy(finish);
+
+		network.open('GET', '/bean_string');
+		network._options.key = 'jsonp_ABCDEFG';
+
+		network.onreadystatechange = function() {
+			if (network.readyState !== 4) {
+				return;
+			}
+
+			if (network.status !== 200) {
+				on_error(network.response);
+			}
+
+			if (network.status === 200) {
+				on_success(network.response);
+			}
+		};
+
+		network.send();
+	});
 });
