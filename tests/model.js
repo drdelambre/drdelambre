@@ -686,7 +686,7 @@ describe('The magic model validation', function() {
 			id: 12,
 			hashtag: 'yolo'
 		}).before({
-			hashtag: function(val) {
+			hashtag(val) {
 				if (val !== 'selfie') {
 					return [ true, val ];
 				}
@@ -707,7 +707,7 @@ describe('The magic model validation', function() {
 			id: 12,
 			hashtag: 'yolo'
 		}).before({
-			hashtag: function(val) {
+			hashtag(val) {
 				return [ false, val.toUpperCase() ];
 			}
 		});

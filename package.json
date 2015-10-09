@@ -28,6 +28,7 @@
     "karma-phantomjs-launcher": "^0.2.1",
     "karma-phantomjs-shim": "^1.1.1",
     "karma-sinon": "^1.0.4",
+    "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.3.3",
     "phantomjs": "^1.9.18",
@@ -36,8 +37,8 @@
     "webpack": "1.12.2"
   },
   "scripts": {
-    "lint": "./node_modules/eslint/bin/eslint.js -c ./tests/lint.json ./scripts/**/*.js ./tests/**/*.js",
-    "test": "npm run lint && ./node_modules/karma-cli/bin/karma start ./tests/karma.conf.js --single-run",
+    "lint": "./node_modules/eslint/bin/eslint.js -c ./tests/config/lint.json ./**/*.js",
+    "test": "npm run lint && ./node_modules/karma-cli/bin/karma start ./tests/config/karma.conf.js --single-run",
     "clean": "./node_modules/rimraf/bin.js ./coverage"
   },
   "license": "MIT",

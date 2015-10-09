@@ -1,11 +1,10 @@
-var webpack = require('webpack'),
-	path = require('path');
+var path = require('path');
 
 module.exports = function(config) {
 	config.set({
 		basePath: '',
 		files: [
-			'./**/*.js',
+			'../**/*.js',
 			{
 				pattern: 'data/*.json',
 				watched: false,
@@ -15,16 +14,16 @@ module.exports = function(config) {
 		],
 
 		preprocessors: {
-			'./**/*.js': [ 'webpack' ]
+			'../**/*.js': [ 'webpack', 'sourcemap' ]
 		},
 
-		frameworks: ['phantomjs-shim', 'mocha', 'chai', 'sinon'],
+		frameworks: [ 'phantomjs-shim', 'mocha', 'chai', 'sinon' ],
 
 		webpack: {
 			resolve: {
-				extensions: ['', '.js', '.less', '.jsx'],
+				extensions: [ '', '.js', '.less', '.jsx' ],
 				alias: {
-					'base': path.join(__dirname, '../lib')
+					'base': path.join(__dirname, '../../lib')
 				}
 			},
 			devtool: 'inline-source-map',
@@ -32,16 +31,16 @@ module.exports = function(config) {
 				fs: 'empty'
 			},
 			module: {
-				loaders: [{
+				loaders: [ {
 					test: /\.(js|jsx)$/,
 					exclude: /(node_modules|conf\.js)/,
-					loaders: ['babel-loader?stage=0&optional[]=runtime']
-				}],
-				postLoaders: [{
+					loaders: [ 'babel-loader?stage=0&optional[]=runtime' ]
+				} ],
+				postLoaders: [ {
 					test: /\.(js|jsx)$/,
 					exclude: /(shims|tests|node_modules)\//,
 					loader: 'istanbul-instrumenter'
-				}]
+				} ]
 			}
 		},
 
@@ -71,7 +70,7 @@ module.exports = function(config) {
 		colors: true,
 		logLevel: config.LOG_ERROR,
 		autoWatch: true,
-		browsers: ['PhantomJS'],
+		browsers: [ 'PhantomJS' ],
 		singleRun: true
 	});
 };

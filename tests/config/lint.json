@@ -6,6 +6,9 @@
   },
   "globals": {
     "process": true,
+    "__dirname": true,
+    "require": true,
+    "module": true,
 
     "expect": true,
     "sinon": true
