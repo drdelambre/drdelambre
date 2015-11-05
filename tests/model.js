@@ -84,6 +84,27 @@ describe('The magic model', function() {
 		expect(model.num).to.be.undefined;
 	});
 
+	it('should clear basic data', function() {
+		var model = new Model({
+			id: 12,
+			name: 'beans',
+			yolo: true
+		});
+
+		model.fill({
+			id: 100,
+			name: 'not beans',
+			yolo: false,
+			num: 100
+		});
+
+		model.clear();
+
+		expect(model.id).to.equal(12);
+		expect(model.name).to.equal('beans');
+		expect(model.yolo).to.be.true;
+	});
+
 	it('should extend with ease', function() {
 		var model = new Model({
 			id: 12,
@@ -163,7 +184,70 @@ describe('The magic model', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
+	});
+
+	it('should throw events correctly on fill', function(done) {
+		var model = new Model({
+				id: 12,
+				name: 'beans'
+			}),
+			spy1 = sinon.spy(),
+			spy2 = sinon.spy();
+
+		model.on_update('id', spy1);
+		model.on_update('*', spy2);
+
+		model.fill({
+			id: 56,
+			name: 'pinto'
+		});
+
+		setTimeout(function() {
+			try {
+				expect(spy1.callCount).to.equal(1);
+				expect(spy2.callCount).to.equal(1);
+
+				expect(spy1.args[0][0].old).to.equal(12);
+				expect(spy1.args[0][0].new).to.equal(56);
+
+				done();
+			} catch (e) {
+				done(e);
+			}
+		}, 11);
+	});
+
+	it('should throw events correctly on clear', function(done) {
+		var model = new Model({
+				id: 12,
+				name: 'beans'
+			}),
+			spy = sinon.spy();
+
+		model.on_update('id', spy);
+
+		model.fill({
+			id: 56,
+			name: 'pinto'
+		});
+
+		setTimeout(function() {
+			model.clear();
+
+			setTimeout(function() {
+				try {
+					expect(spy.callCount).to.equal(2);
+
+					expect(spy.args[1][0].old).to.equal(56);
+					expect(spy.args[1][0].new).to.equal(12);
+
+					done();
+				} catch (e) {
+					done(e);
+				}
+			}, 11);
+		}, 11);
 	});
 });
 
@@ -204,7 +288,7 @@ describe('The magic model with arrays', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
 	});
 
 	it('should update on pushing', function(done) {
@@ -231,7 +315,7 @@ describe('The magic model with arrays', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
 	});
 
 	it('should update on poping', function(done) {
@@ -261,7 +345,7 @@ describe('The magic model with arrays', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
 	});
 
 	it('should update on shifting', function(done) {
@@ -291,7 +375,7 @@ describe('The magic model with arrays', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
 	});
 
 	it('should update on unshifting', function(done) {
@@ -329,7 +413,7 @@ describe('The magic model with arrays', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
 	});
 
 	it('should update on splicing', function(done) {
@@ -369,7 +453,7 @@ describe('The magic model with arrays', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
 	});
 
 	it('should ignore concatination', function(done) {
@@ -397,7 +481,7 @@ describe('The magic model with arrays', function() {
 			} catch (e) {
 				done(e);
 			}
-		}, 51);
+		}, 11);
 	});
 
 	it('should fill basic arrays', function() {
@@ -411,6 +495,18 @@ describe('The magic model with arrays', function() {
 		expect(model.beans[0]).to.equal(1);
 		expect(model.beans[1]).to.equal(2);
 		expect(model.beans[2]).to.equal(3);
+	});
+
+	it('should clear basic arrays', function() {
+		var model = new Model({
+			beans: []
+		});
+
+		model.fill({ beans: [ 1, 2, 3 ] });
+
+		model.clear();
+
+		expect(model.beans.length).to.equal(0);
 	});
 
 	it('should serialize basic arrays', function() {
@@ -568,6 +664,32 @@ describe('The magic model hierarchy', function() {
 		expect(model.sub[0].name).to.equal('hashtag');
 		expect(model.sub[1].id).to.equal(41);
 		expect(model.sub[1].name).to.equal('the rock');
+	});
+
+	it('should clear sub models defined as array constructors', function() {
+		var model = new Model({
+			id: 47,
+			sub: [ SubModel ]
+		});
+
+		model.fill({
+			id: 90,
+			sub: [
+				{
+					id: 34,
+					name: 'hashtag',
+					yolo: 'factor'
+				}, {
+					id: 41,
+					name: 'the rock'
+				}
+			]
+		});
+
+		model.clear();
+
+		expect(model.id).to.equal(47);
+		expect(model.sub.length).to.equal(0);
 	});
 
 	it('should serialize sub models defined as array constructors', function() {
