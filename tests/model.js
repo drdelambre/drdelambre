@@ -728,12 +728,14 @@ describe('The magic model hierarchy', function() {
 
 	it('should call model constructor on push', function() {
 		var model = new Model({
-			id: 47,
-			sub: [ SubModel ]
-		});
+				id: 47,
+				sub: [ SubModel ]
+			}),
+			out;
 
 		model.sub.push(new SubModel({ id: 34, name: 'hashtag' }));
 		model.sub.push({ id: 41, name: 'the rock' });
+		out = model.out();
 
 		expect(model.sub.length).to.equal(2);
 		expect(model.sub[0] instanceof SubModel).to.be.true;
@@ -744,6 +746,14 @@ describe('The magic model hierarchy', function() {
 		expect(model.sub[0].name).to.equal('hashtag');
 		expect(model.sub[1].id).to.equal(41);
 		expect(model.sub[1].name).to.equal('the rock');
+
+		expect(out.sub.length).to.equal(2);
+		expect(out.sub[0] instanceof SubModel).to.be.false;
+		expect(out.sub[1] instanceof SubModel).to.be.false;
+		expect(out.sub[0].id).to.equal(34);
+		expect(out.sub[0].name).to.equal('hashtag');
+		expect(out.sub[1].id).to.equal(41);
+		expect(out.sub[1].name).to.equal('the rock');
 	});
 
 	it('should call model constructor on unshift', function() {
