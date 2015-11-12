@@ -326,12 +326,12 @@ describe('Ajax normalizing module', function() {
 	});
 
 	it('should make a sussessful post request', function(done) {
-		var serve = sinon.spy(function() {
-				return [
+		var serve = sinon.spy(function(req) {
+				req.respond(
 					200,
 					{ 'Content-Type': 'application/json' },
-					'[{ "id": 12, "comment": "hashtag yolo" }]'
-				];
+					'[{ "id": 12, "comment": "hashtag jollo" }]'
+				);
 			}),
 			success = sinon.spy(),
 			error = sinon.spy();
@@ -351,8 +351,6 @@ describe('Ajax normalizing module', function() {
 			success: success,
 			error: error
 		});
-
-		server.respond();
 
 		setTimeout(function() {
 			var expected = encodeURI(
