@@ -2,7 +2,7 @@
   "name": "dd",
   "description": "a light weight framework for event driven front ends",
   "author": "Alex Boatwright <drdelambre@gmail.com>",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/drdelambre/drdelambre",
   "repository": {
     "type": "git",
