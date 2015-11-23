@@ -84,6 +84,23 @@ describe('The magic model', function() {
 		expect(model.num).to.be.undefined;
 	});
 
+	it('should fill with models', function() {
+		var model = new Model({
+			id: 12,
+			name: 'beans',
+			yolo: true
+		});
+
+		model.fill(new Model({
+			name: 'not beans',
+			yolo: false
+		}));
+
+		expect(model.id).to.equal(12);
+		expect(model.name).to.equal('not beans');
+		expect(model.yolo).to.be.false;
+	});
+
 	it('should clear basic data', function() {
 		var model = new Model({
 			id: 12,
