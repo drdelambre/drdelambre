@@ -581,6 +581,33 @@ describe('The magic model hierarchy', function() {
 		expect(model.sub.name).to.equal('hashtag');
 	});
 
+	it('should clear sub models defined as properties', function() {
+		var model = new Model({
+				id: 47,
+				sub: SubModel
+			}),
+			eg;
+
+		model.fill({
+			id: 90,
+			sub: {
+				id: 34,
+				name: 'hashtag',
+				yolo: 'factor'
+			}
+		});
+
+		eg = model.sub;
+
+		model.clear();
+
+		expect(model.sub instanceof SubModel).to.be.true;
+		expect(model.id).to.equal(47);
+		expect(model.sub.id).to.equal(12);
+		expect(model.sub.name).to.equal('yolo');
+		expect(model.sub).to.equal(eg);
+	});
+
 	it('should serialize sub models defined as properties', function() {
 		var model = new Model({
 				id: 47,
