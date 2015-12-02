@@ -285,6 +285,40 @@ describe('Ajax normalizing module', function() {
 		})).to.throw('Ajax.mock: overwritting mock with /test/:id');
 	});
 
+	it('should ignore GET params in a POST mock', function(done) {
+		var spy1 = sinon.spy(),
+			spy2 = sinon.spy();
+
+		server.respondWith(spy1);
+
+		Ajax.mock({
+			url: '/test/beans',
+			method: 'post',
+			callback: spy2
+		});
+
+		Ajax({
+			url: '/test/beans?hashtag=yolo',
+			method: 'post',
+			data: {
+				beans: 12
+			}
+		});
+
+		server.respond();
+
+		setTimeout(function() {
+			try {
+				expect(spy1.called).to.be.false;
+				expect(spy2.called).to.be.true;
+
+				done();
+			} catch (e) {
+				done(e);
+			}
+		}, 10);
+	});
+
 	it('should call a function before every call', function(done) {
 		var spy1 = sinon.spy(),
 			spy2 = sinon.spy(),
