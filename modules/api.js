@@ -324,7 +324,7 @@
 			_before[ni](_xhr);
 		}
 
-		if (params.method !== 'GET') {
+		if (params.method !=== 'GET') {
 			if (params.type !== 'json') {
 				out_data = postString(params.data);
 			} else {
