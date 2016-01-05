@@ -275,7 +275,6 @@
 		params.method = params.method.toUpperCase();
 
 		var topic = params.url,
-			out_data = null,
 			ni, t, _xhr,
 			path_args;
 
@@ -324,15 +323,7 @@
 			_before[ni](_xhr);
 		}
 
-		if (params.method !=== 'GET') {
-			if (params.type !== 'json') {
-				out_data = postString(params.data);
-			} else {
-				out_data = JSON.stringify(params.data);
-			}
-		}
-
-		_xhr.send(out_data);
+		_xhr.send(params.method==='POST' ? postString(params.data) : null);
 
 		return _xhr;
 	},
