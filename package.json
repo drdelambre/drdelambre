@@ -1,19 +1,42 @@
 {
   "name": "dd",
-  "description": "a light weight framework for data driven front ends",
+  "description": "a light weight framework for event driven front ends",
   "author": "Alex Boatwright <drdelambre@gmail.com>",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/drdelambre/drdelambre",
   "repository": {
     "type": "git",
     "url": "https://github.com/drdelambre/drdelambre.git"
   },
-  "main": "./dd.js",
   "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-qunit": "~0.4.0",
-    "grunt-githooks": "~0.3.1"
+    "babel-core": "5.8.25",
+    "babel-eslint": "4.1.3",
+    "babel-loader": "5.3.2",
+    "babel-runtime": "^5.8.25",
+    "chai": "^3.3.0",
+    "eslint": "1.5.1",
+    "eslint-loader": "1.0.0",
+    "eslint-plugin-react": "3.4.2",
+    "istanbul": "^0.3.22",
+    "istanbul-instrumenter-loader": "^0.1.3",
+    "karma": "^0.13.10",
+    "karma-chai": "^0.1.0",
+    "karma-cli": "^0.1.1",
+    "karma-coverage": "^0.5.2",
+    "karma-mocha": "^0.2.0",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "karma-phantomjs-shim": "^1.1.1",
+    "karma-sinon": "^1.0.4",
+    "karma-sourcemap-loader": "^0.3.5",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.3.3",
+    "phantomjs": "^1.9.18",
+    "sinon": "^1.17.1",
+    "webpack": "1.12.2"
+  },
+  "scripts": {
+    "lint": "./node_modules/eslint/bin/eslint.js -c ./tests/config/lint.json ./**/*.js",
+    "test": "npm run lint && ./node_modules/karma-cli/bin/karma start ./tests/config/karma.conf.js --single-run"
   },
   "license": "MIT",
   "private": true
