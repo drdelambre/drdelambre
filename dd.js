@@ -157,7 +157,9 @@
 
 	// $dd.clone:
 	//		lets keep our data clean and seperated
-	self.clone = function(obj){
+	//		to prevent breakage and other functions from not being able to 
+	//		refence the original array objects deep_clone is defaulted to false.
+	self.clone = function(obj, deep_clone){
 		var type = self.type(obj);
 		if(!/^(object||array||date)$/.test(type)){
 			return obj;
@@ -165,13 +167,19 @@
 		if(type === 'date'){
 			return (new Date()).setTime(obj.getTime());
 		}
-		if(type === 'array'){
-			return obj.slice(0);
-		}
-
-		var copy = {},
+		var copy,
 			ni;
-
+		if(type === 'array'){
+			if(!deep_clone){
+				return obj.slice(0);
+			}
+			copy = obj.slice(0);
+			for(ni = 0; len = obj.length, ni < len; ni++){
+				copy[ni] = clone(obj[ni], true);
+			}
+			return copy;
+		}
+		copy = {};
 		for(ni in obj) {
 			if(obj.hasOwnProperty(ni)){
 				copy[ni] = self.clone(obj[ni]);
