@@ -170,12 +170,12 @@
 		var copy,
 			ni;
 		if(type === 'array'){
-			if(deep_clone){
+			if(!deep_clone){
 				return obj.slice(0);
 			}
 			copy = obj.slice(0);
 			for(ni = 0; len = obj.length, ni < len; ni++){
-				copy[ni] = clone(obj[ni])[]
+				copy[ni] = clone(obj[ni], true);
 			}
 			return copy;
 		}
