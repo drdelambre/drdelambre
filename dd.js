@@ -165,13 +165,16 @@
 		if(type === 'date'){
 			return (new Date()).setTime(obj.getTime());
 		}
-		if(type === 'array'){
-			return obj.slice(0);
-		}
-
-		var copy = {},
+		var copy,
 			ni;
-
+		if(type === 'array'){
+			copy = obj.slice(0);
+			for(ni = 0; len = obj.length, ni < len; ni++){
+				copy[ni] = clone(obj[ni])[]
+			}
+			return copy;
+		}
+		copy = {};
 		for(ni in obj) {
 			if(obj.hasOwnProperty(ni)){
 				copy[ni] = self.clone(obj[ni]);
