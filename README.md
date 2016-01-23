@@ -1,4 +1,4 @@
-# $dd [![Build Status](https://travis-ci.org/drdelambre/drdelambre.svg?branch=master)](https://travis-ci.org/drdelambre/drdelambre)
+# $dd [![Build Status](https://travis-ci.org/drdelambre/drdelambre.svg?branch=es6)](https://travis-ci.org/drdelambre/drdelambre)
 > A library of modules for scaling your javascript code  
 
 1. [The Namespace](#the-namespace)
