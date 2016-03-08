@@ -49,6 +49,40 @@ describe('Ajax normalizing module', function() {
 		}, 10);
 	});
 
+	it('should handle bad json', function(done) {
+		var success = sinon.spy(),
+			error = sinon.spy();
+
+		server.respondWith(
+			[
+				200,
+				{ 'Content-Type': 'application/json' },
+				'This is bad json'
+			]
+		);
+
+		Ajax({
+			url: '/test',
+			method: 'GET',
+			success: success,
+			error: error
+		});
+
+		server.respond();
+
+		setTimeout(function() {
+			try {
+				expect(error.called).to.be.false;
+				expect(success.called).to.be.true;
+				expect(success.getCall(0).args[0]).to.be.a('string');
+
+				done();
+			} catch (e) {
+				done(e);
+			}
+		}, 10);
+	});
+
 	it('should make a failed request', function(done) {
 		var success = sinon.spy(),
 			error = sinon.spy();
